@@ -5,6 +5,9 @@ import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
 @Table(name = "projects")
 public class Project {
@@ -24,6 +27,9 @@ public class Project {
 
     private LocalDate endDate;
 
+    @ManyToMany(mappedBy = "projects")
+    private Set<Employee> employees = new HashSet<>();
+
     public Project() {
     }
 
@@ -35,6 +41,14 @@ public class Project {
         this.budget = budget;
         this.startDate = startDate;
         this.endDate = endDate;
+    }
+
+    public Set<Employee> getEmployees() {
+        return employees;
+    }
+
+    public void setEmployees(Set<Employee> employees) {
+        this.employees = employees;
     }
 
     public Long getId() {
