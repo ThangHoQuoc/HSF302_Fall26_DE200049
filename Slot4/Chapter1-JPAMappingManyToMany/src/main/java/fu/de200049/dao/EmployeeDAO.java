@@ -4,6 +4,8 @@ import fu.de200049.pojo.Employee;
 import fu.de200049.pojo.Project;
 import fu.de200049.util.JPAUtil;
 import jakarta.persistence.EntityManager;
+
+import java.math.BigDecimal;
 import java.util.List;
 
 public class EmployeeDAO {
@@ -107,6 +109,36 @@ public class EmployeeDAO {
                 em.getTransaction().rollback();
             }
             e.printStackTrace();
+        } finally {
+            em.close();
+        }
+    }
+
+    public void getProjectStatistics() {
+        EntityManager em =
+                JPAUtil.getEntityManagerFactory().createEntityManager();
+
+        try {
+            List<Object[]> results = em.createQuery(
+                    "SELECT p.projectName, COUNT(e), SUM(e.salary) " +
+                            "FROM Project p JOIN p.employees e " +
+                            "WHERE e.active = true " +
+                            "GROUP BY p.projectName",
+                    Object[].class
+            ).getResultList();
+
+            for (Object[] row : results) {
+                String projectName = (String) row[0];
+                Long employeeCount = (Long) row[1];
+                BigDecimal totalSalary = (BigDecimal) row[2];
+
+                System.out.println(
+                        projectName
+                                + " | Employees: " + employeeCount
+                                + " | Total Salary: " + totalSalary
+                );
+            }
+
         } finally {
             em.close();
         }
