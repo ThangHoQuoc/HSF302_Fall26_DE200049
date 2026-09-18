@@ -130,5 +130,20 @@ public class Employee {
         return "Employee{" + "id=" + id + ", fullName='" + fullName + '\'' + ", email='" + email + '\'' + ", salary=" + salary + ", gender=" + gender + ", hireDate=" + hireDate + ", active=" + active + '}';
     }
 
+    // Sử dụng email làm khóa nghiệp vụ thay vì id,
+// vì id được database tự sinh và có thể chưa có giá trị trước khi persist Employee.
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Employee)) return false;
+        Employee employee = (Employee) o;
+        return email != null && email.equals(employee.email);
+    }
+
+    @Override
+    public int hashCode() {
+        return email != null ? email.hashCode() : 0;
+    }
+
 
 }

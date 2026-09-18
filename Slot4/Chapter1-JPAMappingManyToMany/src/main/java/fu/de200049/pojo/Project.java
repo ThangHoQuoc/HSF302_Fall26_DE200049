@@ -110,4 +110,19 @@ public class Project {
                 ", endDate=" + endDate +
                 '}';
     }
+
+    // Sử dụng projectCode làm khóa nghiệp vụ thay vì id,
+    // vì id được database tự sinh và có thể chưa có giá trị trước khi persist Project.
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Project)) return false;
+        Project project = (Project) o;
+        return projectCode != null && projectCode.equals(project.projectCode);
+    }
+
+    @Override
+    public int hashCode() {
+        return projectCode != null ? projectCode.hashCode() : 0;
+    }
 }
