@@ -5,6 +5,9 @@ import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
 @Table(name = "employees")
 public class Employee {
@@ -28,9 +31,23 @@ public class Employee {
 
     private boolean active;
 
+    @ManyToMany
+    @JoinTable(
+            name = "employee_project",
+            joinColumns = @JoinColumn(name = "employee_id"),
+            inverseJoinColumns = @JoinColumn(name = "project_id")
+    )
+    private Set<Project> projects = new HashSet<>();
 
 
 
+    public Set<Project> getProjects() {
+        return projects;
+    }
+
+    public void setProjects(Set<Project> projects) {
+        this.projects = projects;
+    }
     public Employee() {
     }
     public Employee(String email, String fullName, Gender gender,
