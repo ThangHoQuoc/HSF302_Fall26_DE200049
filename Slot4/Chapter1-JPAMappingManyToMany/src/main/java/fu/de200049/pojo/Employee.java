@@ -149,6 +149,10 @@ public class Employee {
         this.projects.add(p);
         p.getEmployees().add(this);
     }
+    public void unassignFromProject(Project p) {
+        this.projects.remove(p);
+        p.getEmployees().remove(this);
+    }
 
 
 }
