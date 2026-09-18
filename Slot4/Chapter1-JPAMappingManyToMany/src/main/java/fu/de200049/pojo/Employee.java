@@ -131,7 +131,7 @@ public class Employee {
     }
 
     // Sử dụng email làm khóa nghiệp vụ thay vì id,
-// vì id được database tự sinh và có thể chưa có giá trị trước khi persist Employee.
+    // vì id được database tự sinh và có thể chưa có giá trị trước khi persist Employee.
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -143,6 +143,11 @@ public class Employee {
     @Override
     public int hashCode() {
         return email != null ? email.hashCode() : 0;
+    }
+
+    public void assignToProject(Project p) {
+        this.projects.add(p);
+        p.getEmployees().add(this);
     }
 
 
