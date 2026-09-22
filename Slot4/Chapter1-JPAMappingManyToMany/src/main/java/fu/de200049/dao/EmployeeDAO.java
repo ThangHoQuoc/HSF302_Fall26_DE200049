@@ -4,6 +4,7 @@ import fu.de200049.pojo.Employee;
 import fu.de200049.pojo.Project;
 import fu.de200049.util.JPAUtil;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.TypedQuery;
 
 import java.math.BigDecimal;
@@ -169,7 +170,34 @@ public class EmployeeDAO {
     }
 
 
+    public void deactivateEmployee(Long employeeId) {
+        EntityManager em = JPAUtil.getEntityManagerFactory().createEntityManager();
+        EntityTransaction tx = em.getTransaction();
 
+        try {
+            tx.begin();
+
+            Employee employee = em.find(Employee.class, employeeId);
+
+            if (employee == null) {
+                throw new IllegalArgumentException(
+                        "Employee not found: " + employeeId
+                );
+            }
+
+            employee.setActive(false);
+
+            tx.commit();
+
+        } catch (Exception e) {
+            if (tx.isActive()) {
+                tx.rollback();
+            }
+            throw e;
+        } finally {
+            em.close();
+        }
+    }
 
 
 }
