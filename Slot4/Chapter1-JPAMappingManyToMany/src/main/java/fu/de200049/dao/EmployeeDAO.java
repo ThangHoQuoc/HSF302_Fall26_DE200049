@@ -4,6 +4,7 @@ import fu.de200049.pojo.Employee;
 import fu.de200049.pojo.Project;
 import fu.de200049.util.JPAUtil;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.TypedQuery;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -143,6 +144,31 @@ public class EmployeeDAO {
             em.close();
         }
     }
+    public List<Employee> findActiveEmployeesInMultipleProjects() {
+        EntityManager em = JPAUtil.getEntityManagerFactory().createEntityManager();
+
+        try {
+            String jpql = """
+                SELECT e
+                FROM Employee e
+                WHERE e.active = true
+                  AND SIZE(e.projects) > 1
+                """;
+
+            TypedQuery<Employee> query =
+                    em.createQuery(jpql, Employee.class);
+
+            return query.getResultList();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return List.of();
+        } finally {
+            em.close();
+        }
+    }
+
+
 
 
 
