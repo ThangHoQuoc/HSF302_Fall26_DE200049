@@ -1,10 +1,12 @@
 package com.hsf302.ch4.runner;
 
+import com.hsf302.ch4.pojo.Department;
 import com.hsf302.ch4.pojo.Gender;
 import com.hsf302.ch4.pojo.Student;
 import com.hsf302.ch4.service.DepartmentService;
 import com.hsf302.ch4.service.StudentService;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.LazyInitializationException;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.annotation.Order;
 import org.springframework.data.domain.Page;
@@ -76,6 +78,7 @@ public class ExerciseRunner implements CommandLineRunner {
         printList("email domain 'gmail.com'", studentService.findByEmailDomain("gmail.com"));
         printList("email is null", studentService.findWithoutEmail());
     }
+
     private void todo10() {
         title("TODO 10: Between / And / True / After");
         printList("GPA in [3.0, 3.6] desc", studentService.findByGpaRange(3.0, 3.6));
@@ -101,6 +104,7 @@ public class ExerciseRunner implements CommandLineRunner {
         printList("keyword 'hoa'", studentService.searchByKeyword("hoa"));
         printList("keyword 'gmail'", studentService.searchByKeyword("gmail"));
     }
+
     private void todo14() {
         title("TODO 14: Statistics by department (DTO)");
         printList("code | name | total | avgGpa", departmentService.getStatistics());
@@ -110,6 +114,16 @@ public class ExerciseRunner implements CommandLineRunner {
         title("TODO 15: Subquery - GPA above average");
         printList("GPA > AVG", studentService.findAboveAverageGpa());
     }
+
+    private void todo16() {
+        title("TODO 16: LazyInitializationException & JOIN FETCH");
+
+        Department aiFull = departmentService.getWithStudents("AI");
+        System.out.println("(b) " + aiFull);
+        aiFull.getStudents().forEach(s -> System.out.println("     " + s));
+    }
+
+
 
 
     private void partC() {
