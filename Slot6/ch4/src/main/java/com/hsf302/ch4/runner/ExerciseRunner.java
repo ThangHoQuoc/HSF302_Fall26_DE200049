@@ -101,6 +101,12 @@ public class ExerciseRunner implements CommandLineRunner {
         printList("keyword 'hoa'", studentService.searchByKeyword("hoa"));
         printList("keyword 'gmail'", studentService.searchByKeyword("gmail"));
     }
+    private void todo14() {
+        title("TODO 14: Statistics by department (DTO)");
+        printList("code | name | total | avgGpa", departmentService.getStatistics());
+    }
+
+
 
     private void partC() {
         todo8();
@@ -112,7 +118,7 @@ public class ExerciseRunner implements CommandLineRunner {
     private void partD() {
         todo12();
         todo13();
-//        todo14();
+        todo14();
 //        todo15();
 //        todo16();
 //        todo17();
