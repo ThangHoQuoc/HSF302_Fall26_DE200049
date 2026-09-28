@@ -6,7 +6,6 @@ import com.hsf302.ch4.pojo.Student;
 import com.hsf302.ch4.service.DepartmentService;
 import com.hsf302.ch4.service.StudentService;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.LazyInitializationException;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.annotation.Order;
 import org.springframework.data.domain.Page;
@@ -123,7 +122,10 @@ public class ExerciseRunner implements CommandLineRunner {
         aiFull.getStudents().forEach(s -> System.out.println("     " + s));
     }
 
-
+    private void todo17() {
+        title("TODO 17: Native query - TOP N");
+        printList("Top 2 GPA of SE", studentService.findTopNInDepartment("SE", 2));
+    }
 
 
     private void partC() {
@@ -138,8 +140,8 @@ public class ExerciseRunner implements CommandLineRunner {
         todo13();
         todo14();
         todo15();
-//        todo16();
-//        todo17();
+        todo16();
+        todo17();
 //        todo18();
 //        todo19();
     }
