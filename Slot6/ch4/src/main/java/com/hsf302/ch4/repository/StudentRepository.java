@@ -27,4 +27,10 @@ public interface StudentRepository extends JpaRepository<Student, Long>, JpaSpec
     List<Student> findByGenderAndActiveTrue(Gender gender);                  // gender = ? AND active = 1
 
     List<Student> findByDobAfter(LocalDate date);                            // dob > ?
+
+    List<Student> findByDepartment_CodeOrderByFullNameAsc(String code);   // JOIN departments ... WHERE d.code = ?
+
+    long countByDepartment_Code(String code);
+
+    List<Student> findTop3ByOrderByGpaDesc();                              // SELECT TOP 3 ... ORDER BY gpa DESC
 }

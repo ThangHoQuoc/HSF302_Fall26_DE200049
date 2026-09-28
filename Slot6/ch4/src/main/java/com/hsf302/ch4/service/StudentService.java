@@ -34,4 +34,11 @@ public interface StudentService {
     List<Student> findActiveByGender(Gender gender);
 
     List<Student> findBornAfter(LocalDate date);
+
+    List<Student> findByDepartment(String deptCode);
+
+    long countByDepartment(String deptCode);
+
+    List<Student> findTop3ByGpa();
+
 }
