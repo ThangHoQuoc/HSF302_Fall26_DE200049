@@ -124,7 +124,15 @@ public class StudentServiceImpl implements StudentService {
         if (keyword == null || keyword.isBlank()) {
             return List.of();
         }
+
+
+
         return studentRepository.searchByKeyword(keyword.trim());
+
+
+
+
+
     }
     @Override
     public List<Student> findAboveAverageGpa() {
@@ -148,4 +156,12 @@ public class StudentServiceImpl implements StudentService {
         Pageable pageable = PageRequest.of(pageIndex, size, Sort.by("gpa").descending());
         return studentRepository.findActiveByDepartment(deptCode, pageable);
     }
+
+    @Override
+    public Student updateGpa(String studentCode, double newGpa) {
+        return null;
+    }
+
+
+
 }

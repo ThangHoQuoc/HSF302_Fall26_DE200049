@@ -8,6 +8,7 @@ import com.hsf302.ch4.service.DepartmentService;
 import com.hsf302.ch4.service.StudentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
@@ -18,6 +19,7 @@ import java.util.List;
 
 @Component
 @Order(2)
+@Profile("ex1")
 @RequiredArgsConstructor
 public class ExerciseRunner implements CommandLineRunner {
 
@@ -146,6 +148,7 @@ public class ExerciseRunner implements CommandLineRunner {
         }
     }
 
+
     private void partC() {
         todo8();
         todo9();
@@ -169,12 +172,12 @@ public class ExerciseRunner implements CommandLineRunner {
     }
 
     private void partE() {
-     /*   todo20();
-        todo21();
-        todo22();
-        todo23();
+  //      todo20();
+//        todo21();
+//        todo22();
+//        todo23();
 
-      */
+
     }
 
     // ===== helpers =====
@@ -188,5 +191,7 @@ public class ExerciseRunner implements CommandLineRunner {
         System.out.println("   -> " + list.size() + " record(s)");
     }
 
-    // todo6() ... todo24() viết ở các TODO bên dưới
+
+
+
 }

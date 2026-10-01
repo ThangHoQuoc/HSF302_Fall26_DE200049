@@ -17,9 +17,11 @@ import java.util.Optional;
 public interface StudentRepository extends JpaRepository<Student, Long>, JpaSpecificationExecutor<Student> {
     Optional<Student> findByStudentCode(String studentCode);   // WHERE student_code = ?
 
+
     boolean existsByEmail(String email);                        // kiểm tra tồn tại
 
     long countByActiveTrue();                                   // WHERE active = 1 (không cần tham số)
+
 
     List<Student> findByFullNameContainingIgnoreCase(String keyword);   // UPPER(full_name) LIKE UPPER('%kw%')
 
@@ -36,6 +38,9 @@ public interface StudentRepository extends JpaRepository<Student, Long>, JpaSpec
     List<Student> findByDepartment_CodeOrderByFullNameAsc(String code);   // JOIN departments ... WHERE d.code = ?
 
     long countByDepartment_Code(String code);
+
+
+
 
     List<Student> findTop3ByOrderByGpaDesc();                              // SELECT TOP 3 ... ORDER BY gpa DESC
 
@@ -60,4 +65,5 @@ public interface StudentRepository extends JpaRepository<Student, Long>, JpaSpec
 
     @Query("SELECT s FROM Student s WHERE s.department.code = :code AND s.active = true")
     Page<Student> findActiveByDepartment(@Param("code") String code, Pageable pageable);
+
 }

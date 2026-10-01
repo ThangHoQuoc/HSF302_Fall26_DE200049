@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public interface StudentService {
@@ -52,4 +53,7 @@ public interface StudentService {
     List<StudentSummary> getActiveSummaries();
 
     Page<Student> findActiveByDepartment(String deptCode, int pageIndex, int size);
+    Student updateGpa(String studentCode, double newGpa);
+
+
 }
