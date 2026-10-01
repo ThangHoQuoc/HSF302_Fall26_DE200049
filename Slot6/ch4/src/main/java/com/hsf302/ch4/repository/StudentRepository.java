@@ -71,4 +71,8 @@ public interface StudentRepository extends JpaRepository<Student, Long>, JpaSpec
     @Query("SELECT s FROM Student s WHERE s.department.code = :code AND s.active = true")
     Page<Student> findActiveByDepartment(@Param("code") String code, Pageable pageable);
 
+    @Query("SELECT s FROM Student s JOIN s.courses c " +
+            "WHERE c.code = :code AND s.gpa >= :minGpa ORDER BY s.gpa DESC")
+    List<Student> findGoodStudentsInCourse(@Param("code") String courseCode,
+                                           @Param("minGpa") double minGpa);
 }
