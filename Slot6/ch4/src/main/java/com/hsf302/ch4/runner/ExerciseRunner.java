@@ -41,6 +41,17 @@ public class ExerciseRunner implements CommandLineRunner {
         //  todo7();
     }
 
+
+    /** Chạy 1 thao tác ghi, in [OK] hoặc [FAIL] + message (dùng cho Part E). */
+    private void attempt(String label, Runnable action) {
+        try {
+            action.run();
+            System.out.println("   [OK]   " + label);
+        } catch (RuntimeException e) {
+            System.out.println("   [FAIL] " + label + " -> " + e.getMessage());
+        }
+    }
+
     private void todo6() {
         title("TODO 6: count / findById / existsById");
         System.out.println("Departments: " + departmentService.count());
