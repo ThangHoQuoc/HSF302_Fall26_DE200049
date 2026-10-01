@@ -1,6 +1,7 @@
 package com.hsf302.ch4.repository;
 
 import com.hsf302.ch4.pojo.Course;
+import com.hsf302.ch4.pojo.Student;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -14,4 +15,9 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
     List<Course> findByStudents_StudentCodeOrderByCodeAsc(String studentCode);
     List<Course> findByStudents_Department_CodeOrderByCodeAsc(String deptCode);          // có thể TRÙNG
     List<Course> findDistinctByStudents_Department_CodeOrderByCodeAsc(String deptCode);  // loại trùng
+
+
+
+    // CourseRepository
+    List<Course> findByStudentsIsEmpty();
 }
