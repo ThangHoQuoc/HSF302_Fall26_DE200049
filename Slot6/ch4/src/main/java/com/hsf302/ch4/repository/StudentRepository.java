@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -101,4 +102,9 @@ public interface StudentRepository extends JpaRepository<Student, Long>, JpaSpec
     @Query(value = "SELECT s FROM Student s JOIN s.courses c WHERE c.code = :code",
             countQuery = "SELECT COUNT(s) FROM Student s JOIN s.courses c WHERE c.code = :code")
     Page<Student> findPageByCourseCode(@Param("code") String courseCode, Pageable pageable);
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
+    @Query(value = "DELETE FROM student_courses " +
+            "WHERE student_id IN (SELECT id FROM students WHERE active = 0)",
+            nativeQuery = true)
+    int deleteEnrollmentsOfInactiveStudents();
 }
