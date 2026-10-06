@@ -109,8 +109,19 @@ public class CourseServiceImpl implements CourseService {
         return students.size();
     }
 
+    @Override
+    public List<Course> findMinMaxCreadits(int min, int max) {
+        return courseRepository.findbyCreaditGreaterThan3(min, max);
+    }
+
+    @Override
+    public List<Course> findCourseIgnoreCase(String c) {
+        return courseRepository.findByNameContainsIgnoreCase(c);
+    }
+
     private Course getCourse(String code) {
         return courseRepository.findByCode(code)
                 .orElseThrow(() -> new IllegalArgumentException("Course not found: " + code));
     }
+
 }

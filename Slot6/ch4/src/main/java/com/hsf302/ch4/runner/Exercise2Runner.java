@@ -71,6 +71,7 @@ public class Exercise2Runner implements CommandLineRunner {
         todo22();
         todo23();
 //        todo24();
+        todo26();
     }
 
     // ===== helpers =====
@@ -284,5 +285,13 @@ public class Exercise2Runner implements CommandLineRunner {
         System.out.println("Deleted rows: " + enrollmentService.removeEnrollmentsOfInactiveStudents());
         printCourseStats();
         printList("Students without courses", enrollmentService.findStudentsWithoutCourses());
+    }
+
+    private void todo26() {
+        title("TODO 26: credits trong khoảng min–max");
+        List<Course> list = courseService.findCourseIgnoreCase("ing");
+        for (Course c: list) {
+            System.out.println("  " + c.getCode() + " - " + c.getName() + " (" + c.getCredits() + ")");
+        }
     }
 }
