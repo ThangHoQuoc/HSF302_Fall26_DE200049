@@ -3,6 +3,8 @@ package com.example.ch6.service;
 
 
 import com.example.ch6.entity.Student;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
@@ -26,4 +28,5 @@ public interface StudentService {
 
     List<String> getMajors();
     List<Student> search(String keyword);
+    Page<Student> search(String keyword, Pageable pageable);
 }

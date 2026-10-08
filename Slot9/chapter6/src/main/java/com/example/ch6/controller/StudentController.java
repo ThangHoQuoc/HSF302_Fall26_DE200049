@@ -4,6 +4,10 @@ import com.example.ch6.entity.Student;
 import com.example.ch6.service.StudentService;
 import jakarta.validation.Valid;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -97,39 +101,35 @@ public class StudentController {
                     return "redirect:/students";
                 });
     }
-    @GetMapping
-    public String list(@RequestParam(name = "keyword", required = false) String keyword, Model model) {
-        List<Student> students = studentService.search(keyword);
-        model.addAttribute("students", students);
-        model.addAttribute("keyword", keyword); // Giữ lại từ khóa trên ô tìm kiếm sau khi submit
-        return "students/list";
-    }
-    @PostMapping("/{id}/edit")
-    public String update(@PathVariable("id") Long id,
-                         @Valid @ModelAttribute("student") Student student,
-                         BindingResult bindingResult,
-                         Model model,
-                         RedirectAttributes ra) {
-        student.setId(id);   // form không gửi id → gắn từ URL để khi trả lỗi, form action vẫn đúng
 
-        if (!bindingResult.hasFieldErrors("email")
-                && studentService.isEmailTaken(student.getEmail(), id)) {
-            bindingResult.rejectValue("email", "duplicate", "Email đã được sinh viên khác sử dụng");
-        }
-        if (bindingResult.hasErrors()) {
-            return formView(model, true);
-        }
-        try {
-            if (studentService.update(id, student)) {
-                ra.addFlashAttribute("successMsg", "Cập nhật thành công!");
-            } else {
-                ra.addFlashAttribute("errorMsg", "Không tìm thấy sinh viên ID: " + id);
-            }
-        } catch (DataIntegrityViolationException e) {
-            bindingResult.rejectValue("email", "duplicate", "Email đã được sinh viên khác sử dụng");
-            return formView(model, true);
-        }
-        return "redirect:/students";
+
+    @GetMapping
+    public String list(
+            @RequestParam(name = "keyword", required = false) String keyword,
+            @RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "size", defaultValue = "5") int size,
+            @RequestParam(name = "sortBy", defaultValue = "id") String sortBy,
+            @RequestParam(name = "sortDir", defaultValue = "asc") String sortDir,
+            Model model) {
+
+        // Tạo đối tượng Sort và Pageable
+        Sort sort = sortDir.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        // Lấy trang dữ liệu
+        Page<Student> studentPage = studentService.search(keyword, pageable);
+
+        // Truyền dữ liệu sang View
+        model.addAttribute("studentPage", studentPage);
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", studentPage.getTotalPages());
+        model.addAttribute("totalItems", studentPage.getTotalElements());
+        model.addAttribute("sortBy", sortBy);
+        model.addAttribute("sortDir", sortDir);
+        model.addAttribute("reverseSortDir", sortDir.equals("asc") ? "desc" : "asc");
+
+        return "students/list";
     }
 
     // ==================== DELETE ====================

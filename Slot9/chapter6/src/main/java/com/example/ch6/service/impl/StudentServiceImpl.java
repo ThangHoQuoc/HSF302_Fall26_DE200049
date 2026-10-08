@@ -4,6 +4,8 @@ package com.example.ch6.service.impl;
 import com.example.ch6.entity.Student;
 import com.example.ch6.repository.StudentRepository;
 import com.example.ch6.service.StudentService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -85,6 +87,16 @@ public class StudentServiceImpl implements StudentService {
         String trimmedKeyword = keyword.trim();
         return studentRepository.findByNameContainingIgnoreCaseOrEmailContainingIgnoreCase(
                 trimmedKeyword, trimmedKeyword, Sort.by(Sort.Direction.ASC, "id")
+        );
+    }
+    @Override
+    public Page<Student> search(String keyword, Pageable pageable) {
+        if (keyword == null || keyword.isBlank()) {
+            return studentRepository.findAll(pageable);
+        }
+        String trimmedKeyword = keyword.trim();
+        return studentRepository.findByNameContainingIgnoreCaseOrEmailContainingIgnoreCase(
+                trimmedKeyword, trimmedKeyword, pageable
         );
     }
 }
