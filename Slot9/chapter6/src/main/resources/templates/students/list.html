@@ -45,12 +45,59 @@
                 <thead>
                 <tr>
                     <th>#</th>
-                    <th>ID</th>
-                    <th>Họ tên</th>
-                    <th>Email</th>
-                    <th>Tuổi</th>
+
+                    <!-- Cột ID -->
+                    <th>
+                        <a class="text-dark text-decoration-none"
+                           th:href="@{/students(page=${currentPage}, keyword=${keyword}, sortBy='id', sortDir=${sortBy == 'id' ? reverseSortDir : 'asc'})}">
+                            ID
+                            <i th:if="${sortBy == 'id'}"
+                               th:class="${sortDir == 'asc' ? 'bi bi-arrow-up' : 'bi bi-arrow-down'}"></i>
+                        </a>
+                    </th>
+
+                    <!-- Cột Họ tên -->
+                    <th>
+                        <a class="text-dark text-decoration-none"
+                           th:href="@{/students(page=${currentPage}, keyword=${keyword}, sortBy='name', sortDir=${sortBy == 'name' ? reverseSortDir : 'asc'})}">
+                            Họ tên
+                            <i th:if="${sortBy == 'name'}"
+                               th:class="${sortDir == 'asc' ? 'bi bi-arrow-up' : 'bi bi-arrow-down'}"></i>
+                        </a>
+                    </th>
+
+                    <!-- Cột Email -->
+                    <th>
+                        <a class="text-dark text-decoration-none"
+                           th:href="@{/students(page=${currentPage}, keyword=${keyword}, sortBy='email', sortDir=${sortDir == 'asc' and sortBy == 'email' ? 'desc' : 'asc'})}">
+                            Email
+                            <i th:if="${sortBy == 'email'}"
+                               th:class="${sortDir == 'asc' ? 'bi bi-arrow-up' : 'bi bi-arrow-down'}"></i>
+                        </a>
+                    </th>
+
+                    <!-- Cột Tuổi -->
+                    <th>
+                        <a class="text-dark text-decoration-none"
+                           th:href="@{/students(page=${currentPage}, keyword=${keyword}, sortBy='age', sortDir=${sortBy == 'age' ? reverseSortDir : 'asc'})}">
+                            Tuổi
+                            <i th:if="${sortBy == 'age'}"
+                               th:class="${sortDir == 'asc' ? 'bi bi-arrow-up' : 'bi bi-arrow-down'}"></i>
+                        </a>
+                    </th>
+
                     <th>Chuyên ngành</th>
-                    <th>GPA</th>
+
+                    <!-- Cột GPA -->
+                    <th>
+                        <a class="text-dark text-decoration-none"
+                           th:href="@{/students(page=${currentPage}, keyword=${keyword}, sortBy='gpa', sortDir=${sortBy == 'gpa' ? reverseSortDir : 'asc'})}">
+                            GPA
+                            <i th:if="${sortBy == 'gpa'}"
+                               th:class="${sortDir == 'asc' ? 'bi bi-arrow-up' : 'bi bi-arrow-down'}"></i>
+                        </a>
+                    </th>
+
                     <th class="text-center">Thao tác</th>
                 </tr>
                 </thead>
