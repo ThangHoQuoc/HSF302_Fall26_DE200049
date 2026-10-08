@@ -33,11 +33,7 @@ public class StudentController {
 
     // ==================== READ ALL ====================
 
-    @GetMapping
-    public String list(Model model) {
-        model.addAttribute("students", studentService.findAll());
-        return "students/list";
-    }
+
 
     // ==================== READ ONE ====================
 
@@ -101,7 +97,13 @@ public class StudentController {
                     return "redirect:/students";
                 });
     }
-
+    @GetMapping
+    public String list(@RequestParam(name = "keyword", required = false) String keyword, Model model) {
+        List<Student> students = studentService.search(keyword);
+        model.addAttribute("students", students);
+        model.addAttribute("keyword", keyword); // Giữ lại từ khóa trên ô tìm kiếm sau khi submit
+        return "students/list";
+    }
     @PostMapping("/{id}/edit")
     public String update(@PathVariable("id") Long id,
                          @Valid @ModelAttribute("student") Student student,

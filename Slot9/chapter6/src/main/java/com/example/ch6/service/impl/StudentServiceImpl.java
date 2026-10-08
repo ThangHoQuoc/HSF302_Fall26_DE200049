@@ -77,4 +77,14 @@ public class StudentServiceImpl implements StudentService {
     public List<String> getMajors() {
         return List.of("CNTT", "KTPM", "HTTT", "ATTT", "MMT");
     }
+    @Override
+    public List<Student> search(String keyword) {
+        if (keyword == null || keyword.isBlank()) {
+            return findAll();
+        }
+        String trimmedKeyword = keyword.trim();
+        return studentRepository.findByNameContainingIgnoreCaseOrEmailContainingIgnoreCase(
+                trimmedKeyword, trimmedKeyword, Sort.by(Sort.Direction.ASC, "id")
+        );
+    }
 }
