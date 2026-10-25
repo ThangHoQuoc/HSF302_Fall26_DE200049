@@ -3,6 +3,7 @@ package com.hsf302.student.controller;
 import com.hsf302.student.entity.Student;
 import com.hsf302.student.service.StudentService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -36,11 +37,27 @@ public class StudentController {
 
     // TODO 4: GET /students?keyword=...
     @GetMapping
-    public String list(@RequestParam(required = false) String keyword, Model model) {
-        List<Student> students = studentService.search(keyword);
+    public String list(@RequestParam(required = false) String keyword,
+                       @RequestParam(required = false) String major,
+                       @RequestParam(defaultValue = "id") String sort,
+                       @RequestParam(defaultValue = "asc") String dir,
+                       Model model) {
+        List<String> allowedSorts = List.of(
+                "id", "studentCode", "fullName", "email", "dateOfBirth", "major", "gpa", "active"
+        );
+        String sortProperty = allowedSorts.contains(sort) ? sort : "id";
+        String sortDirection = "desc".equals(dir) ? "desc" : "asc";
+        Sort ordering = Sort.by(Sort.Direction.fromString(sortDirection), sortProperty);
+        if (!"id".equals(sortProperty)) {
+            ordering = ordering.and(Sort.by("id"));
+        }
+        List<Student> students = studentService.search(keyword, major, ordering);
 
         model.addAttribute("students", students);
         model.addAttribute("keyword", keyword);
+        model.addAttribute("major", major);
+        model.addAttribute("sort", sortProperty);
+        model.addAttribute("dir", sortDirection);
         model.addAttribute("totalStudents", students.size());
         model.addAttribute("avgGpa", studentService.averageGpa(students));
         model.addAttribute("activeMenu", "list");

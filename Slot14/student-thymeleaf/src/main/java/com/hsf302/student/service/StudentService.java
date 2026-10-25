@@ -25,12 +25,24 @@ public class StudentService {
     }
 
     public List<Student> search(String keyword) {
+        return search(keyword, Sort.by("id"));
+    }
+
+    public List<Student> search(String keyword, Sort sort) {
         if (keyword == null || keyword.isBlank()) {
-            return findAll();
+            return studentRepository.findAll(sort);
         }
         String kw = keyword.trim();
         return studentRepository
-                .findByStudentCodeContainingIgnoreCaseOrFullNameContainingIgnoreCaseOrderByIdAsc(kw, kw);
+                .findByStudentCodeContainingIgnoreCaseOrFullNameContainingIgnoreCase(kw, kw, sort);
+    }
+
+    public List<Student> search(String keyword, String major, Sort sort) {
+        if (major == null || major.isBlank()) {
+            return search(keyword, sort);
+        }
+        String kw = keyword == null ? "" : keyword.trim();
+        return studentRepository.findByMajorAndKeyword(major.trim(), kw, sort);
     }
 
     public Optional<Student> findById(Long id) {

@@ -17,17 +17,31 @@
 
     <!-- TODO 9.3 -->
     <form th:action="@{/students}" method="get" class="row g-2 mb-3">
+        <input type="hidden" name="sort" th:value="${sort}">
+        <input type="hidden" name="dir" th:value="${dir}">
         <div class="col-md-6">
             <input type="text" name="keyword" class="form-control"
                    placeholder="Tìm theo mã SV hoặc họ tên..."
                    aria-label="Tìm theo mã sinh viên hoặc họ tên"
                    th:value="${keyword}">
         </div>
+        <!-- Phần G - Bài 2: Lọc ngành và giữ lựa chọn theo tham số URL -->
+        <div class="col-md-3">
+            <select name="major" class="form-select" aria-label="Lọc theo ngành">
+                <option value="">-- Tất cả ngành --</option>
+                <option th:each="m : ${majors}"
+                        th:value="${m.key}"
+                        th:text="|${m.key} - ${m.value}|"
+                        th:selected="${param.major != null and m.key == param.major[0]}">
+                    SE - Kỹ thuật phần mềm
+                </option>
+            </select>
+        </div>
         <div class="col-auto">
             <button type="submit" class="btn btn-outline-primary">Tìm kiếm</button>
         </div>
-        <div class="col-auto" th:unless="${#strings.isEmpty(keyword)}">
-            <a th:href="@{/students}" class="btn btn-outline-secondary">Xóa lọc</a>
+        <div class="col-auto" th:if="${!#strings.isEmpty(keyword) or !#strings.isEmpty(major)}">
+            <a th:href="@{/students(sort=${sort},dir=${dir})}" class="btn btn-outline-secondary">Xóa lọc</a>
         </div>
     </form>
 
@@ -66,12 +80,78 @@
 
     <div class="table-responsive" th:unless="${#lists.isEmpty(students)}">
         <table class="table table-bordered table-hover align-middle bg-white">
-            <thead class="table-dark">
+            <!-- Phần G - Bài 1: Đổi chiều sắp xếp và hiển thị mũi tên theo tham số URL -->
+            <thead class="table-dark"
+                   th:with="requestedSort=${param.sort != null ? param.sort[0] : 'id'},
+                            requestedDir=${param.dir != null ? param.dir[0] : 'asc'}">
             <tr>
-                <th scope="col">#</th><th scope="col">Mã SV</th><th scope="col">Họ tên</th>
-                <th scope="col">Email</th><th scope="col">Ngày sinh</th><th scope="col">Tuổi</th>
-                <th scope="col">Ngành</th><th scope="col">GPA</th><th scope="col">Xếp loại</th>
-                <th scope="col">Trạng thái</th><th scope="col">Thao tác</th>
+                <th scope="col" th:attr="aria-sort=${sort == 'id' ? (dir == 'desc' ? 'descending' : 'ascending') : 'none'}">
+                    <a class="text-white text-decoration-none"
+                       th:href="@{/students(keyword=${keyword},major=${major},sort='id',dir=${sort == 'id' and dir == 'asc' ? 'desc' : 'asc'})}">
+                        #
+                        <span th:if="${requestedSort == 'id'}"
+                              th:text="${requestedDir == 'desc'} ? '▼' : '▲'" aria-hidden="true">▲</span>
+                    </a>
+                </th>
+                <th scope="col" th:attr="aria-sort=${sort == 'studentCode' ? (dir == 'desc' ? 'descending' : 'ascending') : 'none'}">
+                    <a class="text-white text-decoration-none"
+                       th:href="@{/students(keyword=${keyword},major=${major},sort='studentCode',dir=${sort == 'studentCode' and dir == 'asc' ? 'desc' : 'asc'})}">
+                        Mã SV
+                        <span th:if="${requestedSort == 'studentCode'}"
+                              th:text="${requestedDir == 'desc'} ? '▼' : '▲'" aria-hidden="true">▲</span>
+                    </a>
+                </th>
+                <th scope="col" th:attr="aria-sort=${sort == 'fullName' ? (dir == 'desc' ? 'descending' : 'ascending') : 'none'}">
+                    <a class="text-white text-decoration-none"
+                       th:href="@{/students(keyword=${keyword},major=${major},sort='fullName',dir=${sort == 'fullName' and dir == 'asc' ? 'desc' : 'asc'})}">
+                        Họ tên
+                        <span th:if="${requestedSort == 'fullName'}"
+                              th:text="${requestedDir == 'desc'} ? '▼' : '▲'" aria-hidden="true">▲</span>
+                    </a>
+                </th>
+                <th scope="col" th:attr="aria-sort=${sort == 'email' ? (dir == 'desc' ? 'descending' : 'ascending') : 'none'}">
+                    <a class="text-white text-decoration-none"
+                       th:href="@{/students(keyword=${keyword},major=${major},sort='email',dir=${sort == 'email' and dir == 'asc' ? 'desc' : 'asc'})}">
+                        Email
+                        <span th:if="${requestedSort == 'email'}"
+                              th:text="${requestedDir == 'desc'} ? '▼' : '▲'" aria-hidden="true">▲</span>
+                    </a>
+                </th>
+                <th scope="col" th:attr="aria-sort=${sort == 'dateOfBirth' ? (dir == 'desc' ? 'descending' : 'ascending') : 'none'}">
+                    <a class="text-white text-decoration-none"
+                       th:href="@{/students(keyword=${keyword},major=${major},sort='dateOfBirth',dir=${sort == 'dateOfBirth' and dir == 'asc' ? 'desc' : 'asc'})}">
+                        Ngày sinh
+                        <span th:if="${requestedSort == 'dateOfBirth'}"
+                              th:text="${requestedDir == 'desc'} ? '▼' : '▲'" aria-hidden="true">▲</span>
+                    </a>
+                </th>
+                <th scope="col">Tuổi</th>
+                <th scope="col" th:attr="aria-sort=${sort == 'major' ? (dir == 'desc' ? 'descending' : 'ascending') : 'none'}">
+                    <a class="text-white text-decoration-none"
+                       th:href="@{/students(keyword=${keyword},major=${major},sort='major',dir=${sort == 'major' and dir == 'asc' ? 'desc' : 'asc'})}">
+                        Ngành
+                        <span th:if="${requestedSort == 'major'}"
+                              th:text="${requestedDir == 'desc'} ? '▼' : '▲'" aria-hidden="true">▲</span>
+                    </a>
+                </th>
+                <th scope="col" th:attr="aria-sort=${sort == 'gpa' ? (dir == 'desc' ? 'descending' : 'ascending') : 'none'}">
+                    <a class="text-white text-decoration-none"
+                       th:href="@{/students(keyword=${keyword},major=${major},sort='gpa',dir=${sort == 'gpa' and dir == 'asc' ? 'desc' : 'asc'})}">
+                        GPA
+                        <span th:if="${requestedSort == 'gpa'}"
+                              th:text="${requestedDir == 'desc'} ? '▼' : '▲'" aria-hidden="true">▲</span>
+                    </a>
+                </th>
+                <th scope="col">Xếp loại</th>
+                <th scope="col" th:attr="aria-sort=${sort == 'active' ? (dir == 'desc' ? 'descending' : 'ascending') : 'none'}">
+                    <a class="text-white text-decoration-none"
+                       th:href="@{/students(keyword=${keyword},major=${major},sort='active',dir=${sort == 'active' and dir == 'asc' ? 'desc' : 'asc'})}">
+                        Trạng thái
+                        <span th:if="${requestedSort == 'active'}"
+                              th:text="${requestedDir == 'desc'} ? '▼' : '▲'" aria-hidden="true">▲</span>
+                    </a>
+                </th>
+                <th scope="col">Thao tác</th>
             </tr>
             </thead>
             <tbody>
