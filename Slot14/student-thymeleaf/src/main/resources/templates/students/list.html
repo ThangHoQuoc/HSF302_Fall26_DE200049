@@ -73,7 +73,7 @@
         </div>
     </div>
 
-    <!-- Phần G - Bài 6: Duyệt Map thống kê theo ngành từ Controller -->
+    <!-- Phần G - Bài 6 và 8: Hiển thị COUNT/AVG theo ngành từ truy vấn JPQL -->
     <section class="mb-4" aria-labelledby="majorStatsTitle">
         <h3 id="majorStatsTitle" class="h5" th:text="#{stats.byMajor}">Thống kê sinh viên theo ngành</h3>
         <p class="text-muted small" th:text="#{stats.scope}">
@@ -87,6 +87,7 @@
                     <th scope="col" th:text="#{stats.majorCode}">Mã ngành</th>
                     <th scope="col" th:text="#{student.major}">Ngành</th>
                     <th scope="col" th:text="#{stats.studentCount}">Số sinh viên</th>
+                    <th scope="col" th:text="#{stats.average}">GPA trung bình</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -94,6 +95,7 @@
                     <th scope="row" th:text="${e.key}">SE</th>
                     <td th:text="${majors[e.key]} ?: #{detail.unknownMajor}">Kỹ thuật phần mềm</td>
                     <td th:text="${e.value}">2</td>
+                    <td th:text="${e.value > 0 ? #numbers.formatDecimal(avgGpaByMajor[e.key], 1, 2) : '—'}">8.55</td>
                 </tr>
                 </tbody>
             </table>

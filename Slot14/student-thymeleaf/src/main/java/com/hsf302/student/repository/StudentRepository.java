@@ -1,6 +1,7 @@
 package com.hsf302.student.repository;
 
 import com.hsf302.student.entity.Student;
+import com.hsf302.student.repository.projection.MajorStatistics;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.domain.Sort;
@@ -49,6 +50,20 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
     Page<Student> searchPage(@Param("major") String major,
                              @Param("keyword") String keyword,
                              Pageable pageable);
+
+    // Phần G - Bài 8: Thống kê bằng JPQL trên toàn bộ kết quả lọc.
+    @Query("""
+            select s.major as major, count(s) as studentCount, avg(s.gpa) as averageGpa
+            from Student s
+            where (:major = '' or s.major = :major)
+              and (:keyword = ''
+                   or lower(s.studentCode) like lower(concat('%', :keyword, '%'))
+                   or lower(s.fullName) like lower(concat('%', :keyword, '%')))
+            group by s.major
+            order by s.major
+            """)
+    List<MajorStatistics> summarizeByMajor(@Param("keyword") String keyword,
+                                            @Param("major") String major);
 
     // TODO 19.2: Kiểm tra mã sinh viên đã tồn tại khi thêm mới
     boolean existsByStudentCodeIgnoreCase(String studentCode);

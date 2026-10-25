@@ -2,6 +2,7 @@ package com.hsf302.student.service;
 
 import com.hsf302.student.entity.Student;
 import com.hsf302.student.repository.StudentRepository;
+import com.hsf302.student.repository.projection.MajorStatistics;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -51,6 +52,12 @@ public class StudentService {
         String kw = keyword == null ? "" : keyword.trim();
         String majorCode = major == null ? "" : major.trim();
         return studentRepository.searchPage(majorCode, kw, pageable);
+    }
+
+    public List<MajorStatistics> statisticsByMajor(String keyword, String major) {
+        String kw = keyword == null ? "" : keyword.trim();
+        String majorCode = major == null ? "" : major.trim();
+        return studentRepository.summarizeByMajor(kw, majorCode);
     }
 
     public Optional<Student> findById(Long id) {

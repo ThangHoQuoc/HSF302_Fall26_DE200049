@@ -1,6 +1,7 @@
 package com.hsf302.student.controller;
 
 import com.hsf302.student.entity.Student;
+import com.hsf302.student.repository.projection.MajorStatistics;
 import com.hsf302.student.service.StudentService;
 import com.hsf302.student.validation.StudentFormChecks;
 import jakarta.validation.groups.Default;
@@ -71,17 +72,22 @@ public class StudentController {
         // Thống kê vẫn tính trên toàn bộ kết quả lọc, không chỉ trang hiện tại.
         List<Student> matchingStudents = studentService.search(keyword, major, ordering);
 
-        // Phần G - Bài 6: Đếm sinh viên theo ngành trên toàn bộ kết quả lọc.
+        // Phần G - Bài 6 và 8: Dùng kết quả COUNT/AVG của JPQL để tạo Map cho view.
         Map<String, Long> stats = new LinkedHashMap<>();
+        Map<String, Double> avgGpaByMajor = new LinkedHashMap<>();
         for (String majorCode : majors().keySet()) {
             stats.put(majorCode, 0L);
+            avgGpaByMajor.put(majorCode, 0.0);
         }
-        for (Student student : matchingStudents) {
-            stats.merge(student.getMajor(), 1L, Long::sum);
+        for (MajorStatistics summary : studentService.statisticsByMajor(keyword, major)) {
+            stats.put(summary.getMajor(), summary.getStudentCount());
+            avgGpaByMajor.put(summary.getMajor(),
+                    summary.getAverageGpa() == null ? 0.0 : summary.getAverageGpa());
         }
 
         model.addAttribute("students", page.getContent());
         model.addAttribute("stats", stats);
+        model.addAttribute("avgGpaByMajor", avgGpaByMajor);
         model.addAttribute("page", page);
         model.addAttribute("keyword", keyword);
         model.addAttribute("major", major);
