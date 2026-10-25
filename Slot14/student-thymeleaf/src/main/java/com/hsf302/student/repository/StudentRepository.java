@@ -30,7 +30,7 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
     // Phần G - Bài 2: Lọc ngành kết hợp tìm theo mã sinh viên hoặc họ tên
     @Query("""
             select s from Student s
-            where s.major = :major
+            where s.major.code = :major
               and (:keyword = ''
                    or lower(s.studentCode) like lower(concat('%', :keyword, '%'))
                    or lower(s.fullName) like lower(concat('%', :keyword, '%')))
@@ -42,7 +42,7 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
     // Phần G - Bài 3: Phân trang kết hợp từ khóa, ngành và sắp xếp
     @Query("""
             select s from Student s
-            where (:major = '' or s.major = :major)
+            where (:major = '' or s.major.code = :major)
               and (:keyword = ''
                    or lower(s.studentCode) like lower(concat('%', :keyword, '%'))
                    or lower(s.fullName) like lower(concat('%', :keyword, '%')))
@@ -53,14 +53,14 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
 
     // Phần G - Bài 8: Thống kê bằng JPQL trên toàn bộ kết quả lọc.
     @Query("""
-            select s.major as major, count(s) as studentCount, avg(s.gpa) as averageGpa
+            select s.major.code as major, count(s) as studentCount, avg(s.gpa) as averageGpa
             from Student s
-            where (:major = '' or s.major = :major)
+            where (:major = '' or s.major.code = :major)
               and (:keyword = ''
                    or lower(s.studentCode) like lower(concat('%', :keyword, '%'))
                    or lower(s.fullName) like lower(concat('%', :keyword, '%')))
-            group by s.major
-            order by s.major
+            group by s.major.code
+            order by s.major.code
             """)
     List<MajorStatistics> summarizeByMajor(@Param("keyword") String keyword,
                                             @Param("major") String major);

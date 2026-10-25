@@ -77,9 +77,9 @@
                                 <!-- TODO 15.6 -->
                                 <select id="major" class="form-select" th:field="*{major}" th:errorclass="is-invalid">
                                     <option value="" th:text="#{major.choose}">-- Chọn ngành --</option>
-                                    <option th:each="m : ${majors}"
-                                            th:value="${m.key}"
-                                            th:text="|${m.key} - ${m.value}|">SE - Kỹ thuật phần mềm</option>
+                                    <option th:each="m : ${majorOptions}"
+                                            th:value="${m.id}"
+                                            th:text="|${m.code} - ${m.getLocalizedName(#locale.language)}|">SE - Kỹ thuật phần mềm</option>
                                 </select>
                                 <div class="invalid-feedback" th:if="${#fields.hasErrors('major')}"
                                      th:errors="*{major}"></div>

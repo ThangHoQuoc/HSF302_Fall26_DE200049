@@ -40,7 +40,7 @@
 
                 <dt class="col-sm-3" th:text="#{student.major}">Ngành</dt>
                 <dd class="col-sm-9"
-                    th:text="${student.major} + ' - ' + (${majors[student.major]} ?: #{detail.unknownMajor})">
+                    th:text="|${student.major.code} - ${student.major.getLocalizedName(#locale.language)}|">
                     SE - Kỹ thuật phần mềm
                 </dd>
 

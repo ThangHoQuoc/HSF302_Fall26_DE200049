@@ -1,8 +1,10 @@
 package com.hsf302.student.controller;
 
 import com.hsf302.student.entity.Student;
+import com.hsf302.student.entity.Major;
 import com.hsf302.student.repository.projection.MajorStatistics;
 import com.hsf302.student.service.StudentService;
+import com.hsf302.student.service.MajorService;
 import com.hsf302.student.validation.StudentFormChecks;
 import jakarta.validation.groups.Default;
 import org.springframework.context.MessageSource;
@@ -27,20 +29,26 @@ public class StudentController {
 
     private final StudentService studentService;
     private final MessageSource messageSource;
+    private final MajorService majorService;
 
-    public StudentController(StudentService studentService, MessageSource messageSource) {
+    public StudentController(StudentService studentService, MessageSource messageSource, MajorService majorService) {
         this.studentService = studentService;
         this.messageSource = messageSource;
+        this.majorService = majorService;
     }
 
-    /** Có sẵn trong Model của mọi request trong controller này → ${majors} */
+    @ModelAttribute("majorOptions")
+    public List<Major> majorOptions() {
+        return majorService.findAll();
+    }
+
+    /** Tên ngành theo ngôn ngữ hiện tại, lấy từ database. */
     @ModelAttribute("majors")
     public Map<String, String> majors() {
         Map<String, String> majors = new LinkedHashMap<>();
-        majors.put("SE", message("major.SE"));
-        majors.put("AI", message("major.AI"));
-        majors.put("IA", message("major.IA"));
-        majors.put("GD", message("major.GD"));
+        for (Major major : majorService.findAll()) {
+            majors.put(major.getCode(), major.getLocalizedName(LocaleContextHolder.getLocale().getLanguage()));
+        }
         return majors;
     }
 
@@ -57,7 +65,8 @@ public class StudentController {
         );
         String sortProperty = allowedSorts.contains(sort) ? sort : "id";
         String sortDirection = "desc".equals(dir) ? "desc" : "asc";
-        Sort ordering = Sort.by(Sort.Direction.fromString(sortDirection), sortProperty);
+        String sortPath = "major".equals(sortProperty) ? "major.code" : sortProperty;
+        Sort ordering = Sort.by(Sort.Direction.fromString(sortDirection), sortPath);
         if (!"id".equals(sortProperty)) {
             ordering = ordering.and(Sort.by("id"));
         }

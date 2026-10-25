@@ -29,10 +29,10 @@
         <div class="col-md-3">
             <select name="major" class="form-select" aria-label="Lọc theo ngành" th:attr="aria-label=#{major.filter}">
                 <option value="" th:text="#{major.all}">-- Tất cả ngành --</option>
-                <option th:each="m : ${majors}"
-                        th:value="${m.key}"
-                        th:text="|${m.key} - ${m.value}|"
-                        th:selected="${param.major != null and m.key == param.major[0]}">
+                <option th:each="m : ${majorOptions}"
+                        th:value="${m.code}"
+                        th:text="|${m.code} - ${m.getLocalizedName(#locale.language)}|"
+                        th:selected="${param.major != null and m.code == param.major[0]}">
                     SE - Kỹ thuật phần mềm
                 </option>
             </select>
@@ -193,7 +193,7 @@
                 <td th:text="${s.email}">a@fpt.edu.vn</td>
                 <td th:text="${#temporals.format(s.dateOfBirth, 'dd/MM/yyyy')}">01/01/2004</td>
                 <td th:text="${s.age}">22</td>
-                <td th:text="${majors[s.major]}">Kỹ thuật phần mềm</td>
+                <td th:text="${s.major.getLocalizedName(#locale.language)}">Kỹ thuật phần mềm</td>
                 <td th:text="${#numbers.formatDecimal(s.gpa, 1, 2)}">8.00</td>
                 <td>
                     <span th:replace="~{fragments/badges :: rank(${s.rank})}">Giỏi</span>

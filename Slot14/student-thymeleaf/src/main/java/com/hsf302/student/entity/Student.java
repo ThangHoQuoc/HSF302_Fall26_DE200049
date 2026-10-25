@@ -53,9 +53,11 @@ public class Student {
     private Double gpa;
 
     // TODO 2: Validation cho ngành học
-    @NotBlank(message = "{validation.major.required}")
-    @Column(name = "major", nullable = false, length = 2)
-    private String major;
+    @NotNull(message = "{validation.major.required}")
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "major_id", nullable = false,
+            foreignKey = @ForeignKey(name = "FK_Students_Majors"))
+    private Major major;
 
     @Column(name = "active", nullable = false)
     private boolean active = true;
@@ -64,7 +66,7 @@ public class Student {
     public Student() {
     }
 
-    public Student(Long id, String studentCode, String fullName, String email, LocalDate dateOfBirth, Double gpa, String major, boolean active) {
+    public Student(Long id, String studentCode, String fullName, String email, LocalDate dateOfBirth, Double gpa, Major major, boolean active) {
         this.id = id;
         this.studentCode = studentCode;
         this.fullName = fullName;
@@ -153,11 +155,11 @@ public class Student {
         this.gpa = gpa;
     }
 
-    public String getMajor() {
+    public Major getMajor() {
         return major;
     }
 
-    public void setMajor(String major) {
+    public void setMajor(Major major) {
         this.major = major;
     }
 
