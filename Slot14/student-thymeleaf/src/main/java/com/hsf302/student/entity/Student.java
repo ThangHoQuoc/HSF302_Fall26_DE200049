@@ -1,5 +1,7 @@
 package com.hsf302.student.entity;
 
+import com.hsf302.student.validation.StudentFormChecks;
+import com.hsf302.student.validation.UniqueStudentCode;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import org.hibernate.annotations.Nationalized;
@@ -10,6 +12,7 @@ import java.time.Period;
 
 @Entity
 @Table(name = "Students")
+@UniqueStudentCode(groups = StudentFormChecks.class)
 public class Student {
 
     @Id

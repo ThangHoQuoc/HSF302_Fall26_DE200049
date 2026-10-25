@@ -68,15 +68,6 @@ public class StudentService {
         studentRepository.deleteById(id);
     }
 
-    /** Kiểm tra trùng mã SV, bỏ qua chính sinh viên đang sửa (excludeId) */
-    public boolean isStudentCodeDuplicated(String code, Long excludeId) {
-        if (code == null || code.isBlank()) return false;
-        String c = code.trim();
-        return excludeId == null
-                ? studentRepository.existsByStudentCodeIgnoreCase(c)
-                : studentRepository.existsByStudentCodeIgnoreCaseAndIdNot(c, excludeId);
-    }
-
     public double averageGpa(List<Student> list) {
         return list.stream()
                 .map(Student::getGpa)

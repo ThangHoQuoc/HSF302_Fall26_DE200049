@@ -2,7 +2,8 @@ package com.hsf302.student.controller;
 
 import com.hsf302.student.entity.Student;
 import com.hsf302.student.service.StudentService;
-import jakarta.validation.Valid;
+import com.hsf302.student.validation.StudentFormChecks;
+import jakarta.validation.groups.Default;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Sort;
@@ -11,6 +12,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -148,21 +150,10 @@ public class StudentController {
     // TODO 7: POST /students/save
     @PostMapping("/save")
     public String save(
-            @Valid @ModelAttribute("student") Student student,
+            @Validated({Default.class, StudentFormChecks.class}) @ModelAttribute("student") Student student,
             BindingResult result,
             RedirectAttributes ra
     ) {
-        if (studentService.isStudentCodeDuplicated(
-                student.getStudentCode(),
-                student.getId()
-        )) {
-            result.rejectValue(
-                    "studentCode",
-                    "student.code.duplicate",
-                    message("student.code.duplicate")
-            );
-        }
-
         if (result.hasErrors()) {
             return "students/form";
         }
