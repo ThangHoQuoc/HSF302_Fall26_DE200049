@@ -73,6 +73,33 @@
         </div>
     </div>
 
+    <!-- Phần G - Bài 6: Duyệt Map thống kê theo ngành từ Controller -->
+    <section class="mb-4" aria-labelledby="majorStatsTitle">
+        <h3 id="majorStatsTitle" class="h5" th:text="#{stats.byMajor}">Thống kê sinh viên theo ngành</h3>
+        <p class="text-muted small" th:text="#{stats.scope}">
+            Thống kê trên toàn bộ kết quả tìm kiếm và lọc, gồm tất cả các trang.
+        </p>
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped align-middle bg-white">
+                <caption class="visually-hidden" th:text="#{stats.byMajor}">Thống kê sinh viên theo ngành</caption>
+                <thead class="table-light">
+                <tr>
+                    <th scope="col" th:text="#{stats.majorCode}">Mã ngành</th>
+                    <th scope="col" th:text="#{student.major}">Ngành</th>
+                    <th scope="col" th:text="#{stats.studentCount}">Số sinh viên</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="e : ${stats}">
+                    <th scope="row" th:text="${e.key}">SE</th>
+                    <td th:text="${majors[e.key]} ?: #{detail.unknownMajor}">Kỹ thuật phần mềm</td>
+                    <td th:text="${e.value}">2</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
     <!-- TODO 13.1 -->
     <div th:if="${#lists.isEmpty(students)}" class="alert alert-warning" th:text="#{list.empty}">
         Không có sinh viên nào.

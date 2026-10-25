@@ -69,7 +69,17 @@ public class StudentController {
         // Thống kê vẫn tính trên toàn bộ kết quả lọc, không chỉ trang hiện tại.
         List<Student> matchingStudents = studentService.search(keyword, major, ordering);
 
+        // Phần G - Bài 6: Đếm sinh viên theo ngành trên toàn bộ kết quả lọc.
+        Map<String, Long> stats = new LinkedHashMap<>();
+        for (String majorCode : majors().keySet()) {
+            stats.put(majorCode, 0L);
+        }
+        for (Student student : matchingStudents) {
+            stats.merge(student.getMajor(), 1L, Long::sum);
+        }
+
         model.addAttribute("students", page.getContent());
+        model.addAttribute("stats", stats);
         model.addAttribute("page", page);
         model.addAttribute("keyword", keyword);
         model.addAttribute("major", major);
