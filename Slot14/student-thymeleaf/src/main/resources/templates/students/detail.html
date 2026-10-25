@@ -48,7 +48,9 @@
                 <dd class="col-sm-9" th:text="${#numbers.formatDecimal(student.gpa, 1, 2)} + ' / 10'">8.00 / 10</dd>
 
                 <dt class="col-sm-3">Xếp loại</dt>
-                <dd class="col-sm-9" th:text="${student.rank}">Giỏi</dd>
+                <dd class="col-sm-9">
+                    <span th:replace="~{fragments/badges :: rank(${student.rank})}">Giỏi</span>
+                </dd>
 
                 <dt class="col-sm-3">Học bổng</dt>
                 <dd class="col-sm-9"

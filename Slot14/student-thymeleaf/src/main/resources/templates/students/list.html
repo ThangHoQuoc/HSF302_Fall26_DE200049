@@ -166,12 +166,8 @@
                 <td th:text="${s.age}">22</td>
                 <td th:text="${majors[s.major]}">Kỹ thuật phần mềm</td>
                 <td th:text="${#numbers.formatDecimal(s.gpa, 1, 2)}">8.00</td>
-                <td th:switch="${s.rank}">
-                    <span th:case="'Xuất sắc'" class="badge text-bg-success" th:text="${s.rank}"></span>
-                    <span th:case="'Giỏi'" class="badge text-bg-primary" th:text="${s.rank}"></span>
-                    <span th:case="'Khá'" class="badge text-bg-info" th:text="${s.rank}"></span>
-                    <span th:case="'Trung bình'" class="badge text-bg-warning" th:text="${s.rank}"></span>
-                    <span th:case="*" class="badge text-bg-danger" th:text="${s.rank}"></span>
+                <td>
+                    <span th:replace="~{fragments/badges :: rank(${s.rank})}">Giỏi</span>
                 </td>
                 <td>
                     <span class="badge"
