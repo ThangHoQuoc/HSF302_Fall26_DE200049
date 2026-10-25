@@ -3,6 +3,8 @@ package com.hsf302.student.service;
 import com.hsf302.student.entity.Student;
 import com.hsf302.student.repository.StudentRepository;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,6 +45,12 @@ public class StudentService {
         }
         String kw = keyword == null ? "" : keyword.trim();
         return studentRepository.findByMajorAndKeyword(major.trim(), kw, sort);
+    }
+
+    public Page<Student> search(String keyword, String major, Pageable pageable) {
+        String kw = keyword == null ? "" : keyword.trim();
+        String majorCode = major == null ? "" : major.trim();
+        return studentRepository.searchPage(majorCode, kw, pageable);
     }
 
     public Optional<Student> findById(Long id) {

@@ -68,7 +68,7 @@
         <div class="col-md-4">
             <div class="card stat-card text-bg-info"><div class="card-body">
                 <div>Đang học</div>
-                <div class="value" th:text="${#lists.size(students.?[active])}">0</div>
+                <div class="value" th:text="${activeStudents}">0</div>
             </div></div>
         </div>
     </div>
@@ -158,7 +158,7 @@
             <!-- TODO 11 - 12 -->
             <tr th:each="s, stat : ${students}"
                 th:classappend="${s.gpa lt 5} ? 'table-danger'">
-                <td th:text="${stat.count}">1</td>
+                <td th:text="${page.number * page.size + stat.count}">1</td>
                 <td th:text="${s.studentCode}">SE180001</td>
                 <td th:text="${#strings.toUpperCase(s.fullName)}">NGUYỄN VĂN A</td>
                 <td th:text="${s.email}">a@fpt.edu.vn</td>
@@ -190,6 +190,33 @@
             </tr>
             </tbody>
         </table>
+    </div>
+    <!-- Phần G - Bài 3: Mỗi trang 3 sinh viên, giữ bộ lọc và sắp xếp -->
+    <div th:if="${page.totalElements > 0}" class="mt-3">
+        <p class="text-muted"
+           th:text="|Trang ${page.number + 1} / ${page.totalPages} – Tổng ${page.totalElements} sinh viên|">
+            Trang 1 / 2 – Tổng 5 sinh viên
+        </p>
+        <nav th:if="${page.totalPages > 1}" aria-label="Phân trang danh sách sinh viên">
+            <ul class="pagination flex-wrap">
+                <li class="page-item" th:classappend="${page.first} ? 'disabled'">
+                    <span th:if="${page.first}" class="page-link">Trước</span>
+                    <a th:unless="${page.first}" class="page-link"
+                       th:href="@{/students(page=${page.number - 1},keyword=${keyword},major=${major},sort=${sort},dir=${dir})}">Trước</a>
+                </li>
+                <li class="page-item" th:each="i : ${#numbers.sequence(1, page.totalPages)}"
+                    th:classappend="${i == page.number + 1} ? 'active'">
+                    <span th:if="${i == page.number + 1}" class="page-link" aria-current="page" th:text="${i}">1</span>
+                    <a th:unless="${i == page.number + 1}" class="page-link" th:text="${i}"
+                       th:href="@{/students(page=${i - 1},keyword=${keyword},major=${major},sort=${sort},dir=${dir})}">2</a>
+                </li>
+                <li class="page-item" th:classappend="${page.last} ? 'disabled'">
+                    <span th:if="${page.last}" class="page-link">Sau</span>
+                    <a th:unless="${page.last}" class="page-link"
+                       th:href="@{/students(page=${page.number + 1},keyword=${keyword},major=${major},sort=${sort},dir=${dir})}">Sau</a>
+                </li>
+            </ul>
+        </nav>
     </div>
 </section>
 </body>

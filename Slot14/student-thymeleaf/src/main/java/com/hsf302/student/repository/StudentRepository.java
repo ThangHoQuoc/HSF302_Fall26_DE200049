@@ -4,6 +4,8 @@ import com.hsf302.student.entity.Student;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
@@ -35,6 +37,18 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
     List<Student> findByMajorAndKeyword(@Param("major") String major,
                                         @Param("keyword") String keyword,
                                         Sort sort);
+
+    // Phần G - Bài 3: Phân trang kết hợp từ khóa, ngành và sắp xếp
+    @Query("""
+            select s from Student s
+            where (:major = '' or s.major = :major)
+              and (:keyword = ''
+                   or lower(s.studentCode) like lower(concat('%', :keyword, '%'))
+                   or lower(s.fullName) like lower(concat('%', :keyword, '%')))
+            """)
+    Page<Student> searchPage(@Param("major") String major,
+                             @Param("keyword") String keyword,
+                             Pageable pageable);
 
     // TODO 19.2: Kiểm tra mã sinh viên đã tồn tại khi thêm mới
     boolean existsByStudentCodeIgnoreCase(String studentCode);

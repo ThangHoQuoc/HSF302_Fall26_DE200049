@@ -4,6 +4,8 @@ import com.hsf302.student.entity.Student;
 import com.hsf302.student.service.StudentService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -41,6 +43,7 @@ public class StudentController {
                        @RequestParam(required = false) String major,
                        @RequestParam(defaultValue = "id") String sort,
                        @RequestParam(defaultValue = "asc") String dir,
+                       @RequestParam(defaultValue = "0", name = "page") int pageNumber,
                        Model model) {
         List<String> allowedSorts = List.of(
                 "id", "studentCode", "fullName", "email", "dateOfBirth", "major", "gpa", "active"
@@ -51,15 +54,26 @@ public class StudentController {
         if (!"id".equals(sortProperty)) {
             ordering = ordering.and(Sort.by("id"));
         }
-        List<Student> students = studentService.search(keyword, major, ordering);
+        Page<Student> page = studentService.search(
+                keyword, major, PageRequest.of(Math.max(0, pageNumber), 3, ordering)
+        );
+        if (page.getTotalPages() > 0 && page.getNumber() >= page.getTotalPages()) {
+            page = studentService.search(
+                    keyword, major, PageRequest.of(page.getTotalPages() - 1, 3, ordering)
+            );
+        }
+        // Thống kê vẫn tính trên toàn bộ kết quả lọc, không chỉ trang hiện tại.
+        List<Student> matchingStudents = studentService.search(keyword, major, ordering);
 
-        model.addAttribute("students", students);
+        model.addAttribute("students", page.getContent());
+        model.addAttribute("page", page);
         model.addAttribute("keyword", keyword);
         model.addAttribute("major", major);
         model.addAttribute("sort", sortProperty);
         model.addAttribute("dir", sortDirection);
-        model.addAttribute("totalStudents", students.size());
-        model.addAttribute("avgGpa", studentService.averageGpa(students));
+        model.addAttribute("totalStudents", page.getTotalElements());
+        model.addAttribute("avgGpa", studentService.averageGpa(matchingStudents));
+        model.addAttribute("activeStudents", matchingStudents.stream().filter(Student::isActive).count());
         model.addAttribute("activeMenu", "list");
 
         return "students/list";
