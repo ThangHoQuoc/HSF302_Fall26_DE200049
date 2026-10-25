@@ -17,40 +17,40 @@ public class Student {
     private Long id;
 
     // TODO 1: Validation cho mã sinh viên
-    @NotBlank(message = "Mã sinh viên không được để trống")
-    @Pattern(regexp = "^(SE|SS|SA|HE)\\d{6}$", message = "Mã SV phải có dạng SE/SS/SA/HE + 6 chữ số (VD: SE180001)")
+    @NotBlank(message = "{validation.code.required}")
+    @Pattern(regexp = "^(SE|SS|SA|HE)\\d{6}$", message = "{validation.code.pattern}")
     @Column(name = "student_code", nullable = false, length = 8, unique = true)
     private String studentCode;
 
     // TODO 1: Validation cho họ tên
-    @NotBlank(message = "Họ tên không được để trống")
-    @Size(min = 2, max = 50, message = "Họ tên phải từ 2 đến 50 ký tự")
+    @NotBlank(message = "{validation.name.required}")
+    @Size(min = 2, max = 50, message = "{validation.name.size}")
     @Nationalized
     @Column(name = "full_name", nullable = false, length = 50)
     private String fullName;
 
     // TODO 1: Validation cho email
-    @NotBlank(message = "Email không được để trống")
-    @Email(message = "Email không đúng định dạng")
+    @NotBlank(message = "{validation.email.required}")
+    @Email(message = "{validation.email.format}")
     @Column(name = "email", nullable = false, length = 100)
     private String email;
 
     // TODO 2: Validation cho ngày sinh
-    @NotNull(message = "Ngày sinh không được để trống")
-    @Past(message = "Ngày sinh phải là ngày trong quá khứ")
+    @NotNull(message = "{validation.birthDate.required}")
+    @Past(message = "{validation.birthDate.past}")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @Column(name = "date_of_birth", nullable = false)
     private LocalDate dateOfBirth;
 
     // TODO 2: Validation cho GPA
-    @NotNull(message = "GPA không được để trống")
-    @DecimalMin(value = "0.0", message = "GPA phải lớn hơn hoặc bằng 0")
-    @DecimalMax(value = "10.0", message = "GPA phải nhỏ hơn hoặc bằng 10")
+    @NotNull(message = "{validation.gpa.required}")
+    @DecimalMin(value = "0.0", message = "{validation.gpa.min}")
+    @DecimalMax(value = "10.0", message = "{validation.gpa.max}")
     @Column(name = "gpa", nullable = false)
     private Double gpa;
 
     // TODO 2: Validation cho ngành học
-    @NotBlank(message = "Vui lòng chọn ngành học")
+    @NotBlank(message = "{validation.major.required}")
     @Column(name = "major", nullable = false, length = 2)
     private String major;
 

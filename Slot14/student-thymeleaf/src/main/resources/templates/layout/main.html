@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="vi"
+<html lang="vi" th:lang="${#locale.language}"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- TODO 8.1 -->
-    <title layout:title-pattern="$CONTENT_TITLE | $LAYOUT_TITLE">Student Manager</title>
+    <title layout:title-pattern="$CONTENT_TITLE | $LAYOUT_TITLE" th:text="#{app.title}">Student Manager</title>
 
     <!-- TODO 8.2 -->
     <link rel="stylesheet" th:href="@{/vendor/bootstrap/css/bootstrap.min.css}">
@@ -17,9 +17,9 @@
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
     <div class="container">
-        <a class="navbar-brand" th:href="@{/students}">Student Manager</a>
+        <a class="navbar-brand" th:href="@{/students}" th:text="#{app.title}">Student Manager</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav"
-                aria-controls="mainNav" aria-expanded="false" aria-label="Mở hoặc đóng menu">
+                aria-controls="mainNav" aria-expanded="false" aria-label="Mở hoặc đóng menu" th:attr="aria-label=#{nav.toggle}">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="mainNav">
@@ -27,13 +27,28 @@
                 <!-- TODO 8.3 -->
                 <li class="nav-item">
                     <a class="nav-link" th:href="@{/students}"
-                       th:classappend="${activeMenu == 'list'} ? 'active'">Danh sách</a>
+                       th:classappend="${activeMenu == 'list'} ? 'active'" th:text="#{nav.list}">Danh sách</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" th:href="@{/students/new}"
-                       th:classappend="${activeMenu == 'new'} ? 'active'">Thêm mới</a>
+                       th:classappend="${activeMenu == 'new'} ? 'active'" th:text="#{nav.new}">Thêm mới</a>
                 </li>
             </ul>
+            <!-- Đổi ngôn ngữ tại trang hiện tại, giữ các tham số tìm kiếm và phân trang -->
+            <form method="get" class="d-flex gap-2 ms-lg-3 mt-2 mt-lg-0"
+                  th:attr="aria-label=#{nav.language}">
+                <input type="hidden" name="keyword" th:if="${param.keyword != null}" th:value="${param.keyword[0]}">
+                <input type="hidden" name="major" th:if="${param.major != null}" th:value="${param.major[0]}">
+                <input type="hidden" name="sort" th:if="${param.sort != null}" th:value="${param.sort[0]}">
+                <input type="hidden" name="dir" th:if="${param.dir != null}" th:value="${param.dir[0]}">
+                <input type="hidden" name="page" th:if="${param.page != null}" th:value="${param.page[0]}">
+                <button type="submit" name="lang" value="vi" class="btn btn-sm btn-outline-light"
+                        th:classappend="${#locale.language == 'vi'} ? 'active'"
+                        th:attr="aria-pressed=${#locale.language == 'vi'}">Tiếng Việt</button>
+                <button type="submit" name="lang" value="en" class="btn btn-sm btn-outline-light"
+                        th:classappend="${#locale.language == 'en'} ? 'active'"
+                        th:attr="aria-pressed=${#locale.language == 'en'}">English</button>
+            </form>
         </div>
     </div>
 </nav>
@@ -42,11 +57,11 @@
     <!-- TODO 8.4 -->
     <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
         <span th:text="${successMessage}">Thành công</span>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Đóng thông báo"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Đóng thông báo" th:attr="aria-label=#{alert.close}"></button>
     </div>
     <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
         <span th:text="${errorMessage}">Lỗi</span>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Đóng thông báo"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Đóng thông báo" th:attr="aria-label=#{alert.close}"></button>
     </div>
 
     <!-- TODO 8.5 -->
@@ -57,7 +72,7 @@
 
 <footer class="bg-dark text-white-50 text-center py-3">
     <!-- TODO 8.6 -->
-    &copy; <span th:text="${#temporals.year(#temporals.createNow())}">2026</span> HSF302 – Student Manager
+    &copy; <span th:text="${#temporals.year(#temporals.createNow())}">2026</span> HSF302 – <span th:text="#{app.title}">Student Manager</span>
 </footer>
 
 <!-- TODO 8.7 -->

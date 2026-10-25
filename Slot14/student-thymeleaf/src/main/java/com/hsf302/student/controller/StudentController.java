@@ -3,6 +3,8 @@ package com.hsf302.student.controller;
 import com.hsf302.student.entity.Student;
 import com.hsf302.student.service.StudentService;
 import jakarta.validation.Valid;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -21,19 +23,21 @@ import java.util.Map;
 public class StudentController {
 
     private final StudentService studentService;
+    private final MessageSource messageSource;
 
-    public StudentController(StudentService studentService) {
+    public StudentController(StudentService studentService, MessageSource messageSource) {
         this.studentService = studentService;
+        this.messageSource = messageSource;
     }
 
     /** Có sẵn trong Model của mọi request trong controller này → ${majors} */
     @ModelAttribute("majors")
     public Map<String, String> majors() {
         Map<String, String> majors = new LinkedHashMap<>();
-        majors.put("SE", "Kỹ thuật phần mềm");
-        majors.put("AI", "Trí tuệ nhân tạo");
-        majors.put("IA", "An toàn thông tin");
-        majors.put("GD", "Thiết kế đồ họa");
+        majors.put("SE", message("major.SE"));
+        majors.put("AI", message("major.AI"));
+        majors.put("IA", message("major.IA"));
+        majors.put("GD", message("major.GD"));
         return majors;
     }
 
@@ -95,7 +99,7 @@ public class StudentController {
                 .orElseGet(() -> {
                     ra.addFlashAttribute(
                             "errorMessage",
-                            "Không tìm thấy sinh viên có id = " + id
+                            message("student.notFound", id)
                     );
                     return "redirect:/students";
                 });
@@ -125,7 +129,7 @@ public class StudentController {
                 .orElseGet(() -> {
                     ra.addFlashAttribute(
                             "errorMessage",
-                            "Không tìm thấy sinh viên có id = " + id
+                            message("student.notFound", id)
                     );
                     return "redirect:/students";
                 });
@@ -144,8 +148,8 @@ public class StudentController {
         )) {
             result.rejectValue(
                     "studentCode",
-                    "duplicate",
-                    "Mã sinh viên đã tồn tại"
+                    "student.code.duplicate",
+                    message("student.code.duplicate")
             );
         }
 
@@ -158,10 +162,9 @@ public class StudentController {
 
         studentService.save(student);
 
-        String action = isNewStudent ? "Thêm" : "Cập nhật";
         ra.addFlashAttribute(
                 "successMessage",
-                action + " sinh viên " + fullName + " thành công!"
+                message(isNewStudent ? "student.created" : "student.updated", fullName)
         );
 
         return "redirect:/students";
@@ -173,8 +176,12 @@ public class StudentController {
         studentService.deleteById(id);
         ra.addFlashAttribute(
                 "successMessage",
-                "Đã xóa sinh viên có id = " + id
+                message("student.deleted", id)
         );
         return "redirect:/students";
+    }
+
+    private String message(String code, Object... arguments) {
+        return messageSource.getMessage(code, arguments, LocaleContextHolder.getLocale());
     }
 }

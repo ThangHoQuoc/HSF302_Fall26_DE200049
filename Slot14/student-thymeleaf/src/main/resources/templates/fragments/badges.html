@@ -1,17 +1,18 @@
 <!DOCTYPE html>
-<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<html lang="vi" th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Badge xếp loại</title>
+    <title th:text="#{rank.title}">Badge xếp loại</title>
 </head>
 <body>
 <!-- Phần G - Bài 4: Fragment dùng chung, nhận xếp loại qua tham số rank -->
 <th:block th:fragment="rank(rank)" th:switch="${rank}">
-    <span th:case="'Xuất sắc'" class="badge text-bg-success" th:text="${rank}">Xuất sắc</span>
-    <span th:case="'Giỏi'" class="badge text-bg-primary" th:text="${rank}">Giỏi</span>
-    <span th:case="'Khá'" class="badge text-bg-info" th:text="${rank}">Khá</span>
-    <span th:case="'Trung bình'" class="badge text-bg-warning" th:text="${rank}">Trung bình</span>
-    <span th:case="*" class="badge text-bg-danger" th:text="${rank}">Yếu</span>
+    <span th:case="'Xuất sắc'" class="badge text-bg-success" th:text="#{rank.excellent}">Xuất sắc</span>
+    <span th:case="'Giỏi'" class="badge text-bg-primary" th:text="#{rank.good}">Giỏi</span>
+    <span th:case="'Khá'" class="badge text-bg-info" th:text="#{rank.fair}">Khá</span>
+    <span th:case="'Trung bình'" class="badge text-bg-warning" th:text="#{rank.average}">Trung bình</span>
+    <span th:case="'Yếu'" class="badge text-bg-danger" th:text="#{rank.weak}">Yếu</span>
+    <span th:case="*" class="badge text-bg-danger" th:text="#{rank.unranked}">Chưa xếp loại</span>
 </th:block>
 </body>
 </html>
