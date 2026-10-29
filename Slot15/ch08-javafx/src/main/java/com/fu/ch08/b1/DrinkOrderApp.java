@@ -7,6 +7,8 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -16,7 +18,6 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.LinkedHashMap;
 import java.util.Map;
-
 
 
 public class DrinkOrderApp extends Application {
@@ -48,6 +49,9 @@ public class DrinkOrderApp extends Application {
     private final Label lblResult = new Label("Chưa có đơn hàng");
     private final TextArea taLog = new TextArea();
 
+    public static void main(String[] args) {
+        launch(args);
+    }
 
     @Override
     public void start(Stage stage) {
@@ -94,16 +98,20 @@ public class DrinkOrderApp extends Application {
 
         Scene scene = new Scene(root, 540, 580);
 
+        // TODO 9: Event FILTER trên Scene — chạy ở pha capturing, TRƯỚC khi control con nhận phím
+        scene.addEventFilter(KeyEvent.KEY_PRESSED, e -> {
+            if (e.getCode() == KeyCode.ESCAPE) {
+                reset();
+                log("ESC → làm lại form");
+                e.consume();                // chặn, không cho sự kiện đi tiếp
+            }
+        });
 
         stage.setScene(scene);
         stage.setTitle("B1 - Controls & Sự kiện");
         stage.show();
         tfName.requestFocus();
 
-    }
-
-    public static void main(String[] args) {
-        launch(args);
     }
 
     private void registerEvents() {
