@@ -2,6 +2,7 @@ package com.fu.ch08.b3;
 
 import com.fu.ch08.common.AlertUtil;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.VPos;
@@ -141,15 +142,13 @@ public class RegisterApp extends Application {
         });
     }
 
-    private Parent buildLoginView(String s) {
-        return null;
-    }
 
     private void addField(GridPane grid, int row, String label, Node input, Label error) {
         Label lbl = new Label(label);
         lbl.setPadding(new Insets(4, 0, 0, 0));
         GridPane.setValignment(lbl, VPos.TOP);  // nhãn canh theo dòng đầu (ô nhập), không canh giữa cả ô
         grid.add(lbl, 0, row);
+        grid.add(error == null ? input : new VBox(2, input, error), 1, row);
     }
 
     // TODO 2: Cấu hình control
@@ -187,13 +186,11 @@ public class RegisterApp extends Application {
 
     private boolean vFullName() {
         // \p{L}: chữ cái mọi ngôn ngữ; \p{M}: dấu kết hợp (bộ gõ "Unicode tổ hợp")
-        return check(errFullName, tfFullName.getText().trim().matches("[\\p{L}\\p{M} ]{3,50}"),
-                "Họ tên 3–50 ký tự, chỉ gồm chữ cái và khoảng trắng");
+        return check(errFullName, tfFullName.getText().trim().matches("[\\p{L}\\p{M} ]{3,50}"), "Họ tên 3–50 ký tự, chỉ gồm chữ cái và khoảng trắng");
     }
 
     private boolean vEmail() {
-        return check(errEmail, tfEmail.getText().trim().matches("^[\\w.+-]+@[\\w-]+(\\.[\\w-]+)+$"),
-                "Email không hợp lệ (VD: abc@example.com)");
+        return check(errEmail, tfEmail.getText().trim().matches("^[\\w.+-]+@[\\w-]+(\\.[\\w-]+)+$"), "Email không hợp lệ (VD: abc@example.com)");
     }
 
     private boolean vUsername() {
@@ -204,8 +201,7 @@ public class RegisterApp extends Application {
     }
 
     private boolean vPassword() {
-        return check(errPassword, pfPassword.getText().matches(STRONG_PASSWORD),
-                "Mật khẩu ≥ 8 ký tự, gồm chữ hoa, chữ thường, số và ký tự đặc biệt");
+        return check(errPassword, pfPassword.getText().matches(STRONG_PASSWORD), "Mật khẩu ≥ 8 ký tự, gồm chữ hoa, chữ thường, số và ký tự đặc biệt");
     }
 
     private boolean vConfirm() {
@@ -244,28 +240,17 @@ public class RegisterApp extends Application {
 
     // TODO 7: Đăng ký — dùng & (KHÔNG dùng &&) để chạy HẾT validator → hiện mọi lỗi cùng lúc
     private void handleRegister() {
-        boolean ok = vFullName() & vEmail() & vUsername() & vPassword()
-                & vConfirm() & vGender() & vDob() & vMajor();
+        boolean ok = vFullName() & vEmail() & vUsername() & vPassword() & vConfirm() & vGender() & vDob() & vMajor();
         if (!ok) {
             AlertUtil.warn("Vui lòng sửa các ô đang báo lỗi (chữ đỏ).");
             return;
         }
 
-        List<String> hobbies = Stream.of(chkSport, chkMusic, chkGame, chkReading)
-                .filter(CheckBox::isSelected).map(CheckBox::getText).toList();
-        User u = new User(
-                tfFullName.getText().trim(),
-                tfEmail.getText().trim(),
-                tfUsername.getText().trim().toLowerCase(),
-                pfPassword.getText(),
-                ((RadioButton) tgGender.getSelectedToggle()).getText(),
-                dpDob.getValue(),
-                cbMajor.getValue(),
-                hobbies);
+        List<String> hobbies = Stream.of(chkSport, chkMusic, chkGame, chkReading).filter(CheckBox::isSelected).map(CheckBox::getText).toList();
+        User u = new User(tfFullName.getText().trim(), tfEmail.getText().trim(), tfUsername.getText().trim().toLowerCase(), pfPassword.getText(), ((RadioButton) tgGender.getSelectedToggle()).getText(), dpDob.getValue(), cbMajor.getValue(), hobbies);
         UserStore.add(u);
 
-        AlertUtil.info("Đăng ký thành công!\nUsername: %s\nNgành: %s\nSở thích: %s".formatted(
-                u.username(), u.major(), hobbies.isEmpty() ? "(không)" : String.join(", ", hobbies)));
+        AlertUtil.info("Đăng ký thành công!\nUsername: %s\nNgành: %s\nSở thích: %s".formatted(u.username(), u.major(), hobbies.isEmpty() ? "(không)" : String.join(", ", hobbies)));
         resetForm();
         scene.setRoot(buildLoginView(u.username()));    // sang đăng nhập, điền sẵn username
     }
@@ -282,9 +267,62 @@ public class RegisterApp extends Application {
         // Bỏ tích chkAgree là đủ, binding tự disable nút.
 
         // Xóa lỗi SAU CÙNG: các listener ở 4b vừa chạy khi reset giá trị và đã ghi lỗi "Vui lòng chọn..."
-        Stream.of(errFullName, errEmail, errUsername, errPassword, errConfirm, errGender, errDob, errMajor)
-                .forEach(l -> l.setText(""));
+        Stream.of(errFullName, errEmail, errUsername, errPassword, errConfirm, errGender, errDob, errMajor).forEach(l -> l.setText(""));
         tfFullName.requestFocus();
+    }
+
+    // TODO 9: Form đăng nhập — kiểm tra với UserStore
+    private Parent buildLoginView(String prefillUser) {
+        Label title = new Label("ĐĂNG NHẬP");
+        title.setStyle("-fx-font-size: 20; -fx-font-weight: bold; -fx-text-fill: #1a73e8;");
+
+        TextField tfUser = new TextField(prefillUser);
+        tfUser.setPromptText("Username");
+        PasswordField pfPass = new PasswordField();
+        pfPass.setPromptText("Password");
+        Label lblMsg = new Label();
+        lblMsg.setStyle("-fx-text-fill: #d93025;");
+
+        Button btnLogin = new Button("Đăng nhập");
+        btnLogin.setDefaultButton(true);
+        btnLogin.setMaxWidth(Double.MAX_VALUE);
+        Hyperlink linkRegister = new Hyperlink("Chưa có tài khoản? Đăng ký");
+
+        btnLogin.setOnAction(e -> {
+            if (tfUser.getText().isBlank() || pfPass.getText().isEmpty()) {
+                lblMsg.setText("Nhập đầy đủ username và password");
+                return;
+            }
+            UserStore.login(tfUser.getText(), pfPass.getText()).ifPresentOrElse(u -> {
+                lblMsg.setText("");
+                AlertUtil.info("Xin chào %s!\nNgành: %s".formatted(u.fullName(), u.major()));
+            }, () -> {
+                lblMsg.setText("Sai username hoặc mật khẩu");
+                pfPass.clear();
+            });
+        });
+        linkRegister.setOnAction(e -> scene.setRoot(registerView));   // quay lại form đăng ký (giữ dữ liệu đang nhập)
+
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.addRow(0, new Label("Username"), tfUser);
+        grid.addRow(1, new Label("Password"), pfPass);
+        ColumnConstraints c0 = new ColumnConstraints(80);
+        ColumnConstraints c1 = new ColumnConstraints();
+        c1.setHgrow(Priority.ALWAYS);
+        grid.getColumnConstraints().addAll(c0, c1);
+
+        VBox box = new VBox(12, title, grid, lblMsg, btnLogin, linkRegister);
+        box.setAlignment(Pos.CENTER);
+        box.setMaxWidth(340);
+
+        StackPane root = new StackPane(box);
+        root.setPadding(new Insets(20));
+
+        Node focus = prefillUser.isEmpty() ? tfUser : pfPass;
+        Platform.runLater(focus::requestFocus);
+        return root;
     }
 
 }
