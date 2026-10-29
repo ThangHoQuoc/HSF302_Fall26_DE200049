@@ -46,7 +46,7 @@
                 <version>0.0.8</version>
                 <configuration>
                     <!-- Đổi theo bài đang chạy: com.fu.ch08/com.fu.ch08.b1.DrinkOrderApp -->
-                    <mainClass>com.fu.ch08/com.fu.ch08.b2.LoginLayoutApp</mainClass>                </configuration>
+                    <mainClass>com.fu.ch08/com.fu.ch08.b3.RegisterApp</mainClass>                </configuration>
             </plugin>
         </plugins>
     </build>
