@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Hyperlink?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="560.0" minWidth="800.0" prefHeight="650.0" prefWidth="980.0"
+            style="-fx-background-color: linear-gradient(to bottom,#eef4ff,#dfe9ff 35%,#f8faff 100%);"
+            xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="edu.fpt.swt301.demologin.HelloController">
+
+    <children>
+        <AnchorPane prefHeight="510.0" prefWidth="800.0"
+                    style="-fx-background-color: rgba(255,255,255,0.83); -fx-background-radius: 28; -fx-effect: dropshadow(gaussian, rgba(30,56,120,0.18), 28, 0.2, 0, 10);"
+                    AnchorPane.bottomAnchor="70.0" AnchorPane.leftAnchor="90.0"
+                    AnchorPane.rightAnchor="90.0" AnchorPane.topAnchor="70.0">
+
+            <children>
+                <VBox alignment="CENTER" prefHeight="510.0" prefWidth="390.0" spacing="18.0"
+                      style="-fx-background-color: linear-gradient(to bottom right, #0f172a, #1e3a8a 38%, #3b82f6 100%); -fx-background-radius: 28 0 0 28;"
+                      AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+                    <children>
+                        <Circle radius="42.0" fill="white" opacity="0.15" stroke="rgba(255,255,255,0.5)" strokeWidth="1.5" />
+                        <Label text="Welcome back" textFill="WHITE">
+                            <font>
+                                <Font name="System Bold" size="28.0" />
+                            </font>
+                        </Label>
+                        <Label alignment="CENTER" maxWidth="260.0"
+                               text="Manage your account and stay connected with your team."
+                               textFill="#dbeafe" wrapText="true">
+                            <font>
+                                <Font size="14.0" />
+                            </font>
+                        </Label>
+                        <HBox alignment="CENTER" spacing="10.0" style="-fx-padding: 8 14 8 14; -fx-background-color: rgba(255,255,255,0.10); -fx-background-radius: 999;">
+                            <children>
+                                <Circle radius="6.0" fill="#7dd3fc" />
+                                <Label text="Secure access" textFill="WHITE">
+                                    <font>
+                                        <Font size="12.0" />
+                                    </font>
+                                </Label>
+                            </children>
+                        </HBox>
+                    </children>
+                    <padding>
+                        <Insets bottom="40.0" left="30.0" right="30.0" top="40.0" />
+                    </padding>
+                </VBox>
+
+                <VBox alignment="CENTER" layoutX="390.0" prefHeight="510.0" prefWidth="410.0" spacing="18.0"
+                      AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="390.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                    <children>
+                        <Label text="Sign in" textFill="#111827">
+                            <font>
+                                <Font name="System Bold" size="30.0" />
+                            </font>
+                        </Label>
+
+                        <VBox spacing="8.0">
+                            <children>
+                                <Label text="Email or username" textFill="#374151">
+                                    <font>
+                                        <Font size="13.0" />
+                                    </font>
+                                </Label>
+                                <TextField fx:id="usernameField" promptText="Enter your email"
+                                           style="-fx-background-color: #f3f4f6; -fx-background-radius: 12; -fx-padding: 12; -fx-border-color: #dbe3f0; -fx-border-radius: 12;" />
+                            </children>
+                        </VBox>
+
+                        <VBox spacing="8.0">
+                            <children>
+                                <Label text="Password" textFill="#374151">
+                                    <font>
+                                        <Font size="13.0" />
+                                    </font>
+                                </Label>
+                                <PasswordField fx:id="passwordField" promptText="Enter your password"
+                                               style="-fx-background-color: #f3f4f6; -fx-background-radius: 12; -fx-padding: 12; -fx-border-color: #dbe3f0; -fx-border-radius: 12;" />
+                            </children>
+                        </VBox>
+
+                        <HBox alignment="CENTER_LEFT" prefWidth="300.0">
+                            <children>
+                                <CheckBox text="Remember me" textFill="#4b5563" />
+                                <HBox HBox.hgrow="ALWAYS" />
+                                <Hyperlink text="Forgot password?" textFill="#2563eb" />
+                            </children>
+                        </HBox>
+
+                        <Button defaultButton="true" maxWidth="1.7976931348623157E308"
+                                mnemonicParsing="false" onAction="#onHelloButtonClick"
+                                prefHeight="46.0" text="Login" textFill="WHITE"
+                                style="-fx-background-color: linear-gradient(to right, #2563eb, #3b82f6); -fx-background-radius: 14; -fx-cursor: hand; -fx-font-weight: bold;">
+                            <font>
+                                <Font name="System Bold" size="15.0" />
+                            </font>
+                        </Button>
+
+                        <HBox alignment="CENTER" spacing="8.0">
+                            <children>
+                                <Label text="Need an account?" textFill="#6b7280" />
+                                <Hyperlink text="Create one" textFill="#2563eb" />
+                            </children>
+                        </HBox>
+
+                        <Label fx:id="welcomeText" text="" textFill="#1d4ed8">
+                            <font>
+                                <Font size="12.0" />
+                            </font>
+                        </Label>
+                    </children>
+                    <padding>
+                        <Insets bottom="30.0" left="44.0" right="44.0" top="10.0" />
+                    </padding>
+                </VBox>
+            </children>
+        </AnchorPane>
+    </children>
+</AnchorPane>
