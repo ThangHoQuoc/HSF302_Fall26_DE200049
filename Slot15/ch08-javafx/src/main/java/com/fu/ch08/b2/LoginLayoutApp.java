@@ -1,9 +1,12 @@
 package com.fu.ch08.b2;
 
 import javafx.application.Application;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
@@ -44,8 +47,23 @@ public class LoginLayoutApp extends Application {
         return track(root);
     }
 
+    // TODO 2: Header — HBox: logo, tiêu đề, SPACER giãn, version bên phải
     private Node buildHeader() {
-        return new HBox();
+        Label logo = new Label("HSF");
+        logo.setStyle("-fx-background-color: #f27024; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 4 8;");
+        Label title = new Label("Hệ thống quản lý sinh viên");
+        title.setStyle("-fx-font-size: 16; -fx-text-fill: white;");
+        Label version = new Label("v1.0");
+        version.setStyle("-fx-text-fill: #cfd8dc;");
+
+        Region spacer = new Region();
+        HBox.setHgrow(spacer, Priority.ALWAYS);     // spacer chiếm hết chỗ trống → "đẩy" version sang phải
+
+        HBox header = new HBox(10, logo, title, spacer, version);
+        header.setAlignment(Pos.CENTER_LEFT);
+        header.setPadding(new Insets(10, 16, 10, 16));
+        header.setStyle("-fx-background-color: #263238;");
+        return track(header);
     }
 
     private Node buildCenter() {
