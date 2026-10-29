@@ -160,7 +160,7 @@ public class DrinkOrderApp extends Application {
         taLog.setOnMouseClicked(e -> {
             if (e.getClickCount() == 2) taLog.clear();
         });
-    }
+
     }
 
     private void handleCalc(ActionEvent e) {
