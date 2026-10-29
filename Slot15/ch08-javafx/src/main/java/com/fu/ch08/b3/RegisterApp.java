@@ -1,5 +1,6 @@
 package com.fu.ch08.b3;
 
+import com.fu.ch08.common.AlertUtil;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -10,6 +11,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
+
+import java.util.function.BooleanSupplier;
 
 public class RegisterApp extends Application {
 
@@ -94,6 +97,39 @@ public class RegisterApp extends Application {
         return sp;
     }
 
+
+    // TODO 4: Đăng ký sự kiện
+    private void registerEvents() {
+        // 4a. Ô gõ chữ: validate khi RỜI KHỎI ô (mất focus) — không làm phiền khi đang gõ
+        onFocusLost(tfFullName, this::vFullName);
+        onFocusLost(tfEmail, this::vEmail);
+        onFocusLost(tfUsername, this::vUsername);
+        onFocusLost(pfPassword, this::vPassword);
+        onFocusLost(pfConfirm, this::vConfirm);
+
+        // 4b. Control dạng chọn: validate ngay khi giá trị đổi
+        tgGender.selectedToggleProperty().addListener((obs, o, n) -> vGender());
+        dpDob.valueProperty().addListener((obs, o, n) -> vDob());
+        cbMajor.valueProperty().addListener((obs, o, n) -> vMajor());
+
+        // 4c. Độ mạnh mật khẩu — cập nhật theo TỪNG PHÍM gõ
+        pfPassword.textProperty().addListener((obs, o, n) -> updateStrength(n));
+
+        // 4d. Nút
+        btnRegister.setOnAction(e -> handleRegister());
+        btnReset.setOnAction(e -> {
+            if (AlertUtil.confirm("Xóa toàn bộ dữ liệu đã nhập?")) resetForm();
+        });
+    }
+
+    private void onFocusLost(Node node, BooleanSupplier validator) {
+        node.focusedProperty().addListener((obs, wasFocused, isFocused) -> {
+            if (!isFocused) validator.getAsBoolean();
+        });
+    }
+
+
+
     private Parent buildLoginView(String s) {
         return null;
     }
@@ -105,8 +141,7 @@ public class RegisterApp extends Application {
         grid.add(lbl, 0, row);
     }
 
-        private void registerEvents() {
-    }
+
 
 
 
