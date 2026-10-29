@@ -1,6 +1,7 @@
 package com.fu.ch08.b1;
 
 import javafx.application.Application;
+import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -84,7 +85,10 @@ public class DrinkOrderApp extends Application {
         VBox root = new VBox(12, title, form, buttons, lblResult, new Label("Nhật ký sự kiện:"), taLog);
         root.setPadding(new Insets(16));
 
+        registerEvents();
+
         Scene scene = new Scene(root, 540, 580);
+
 
         stage.setScene(scene);
         stage.setTitle("B1 - Controls & Sự kiện");
@@ -95,5 +99,13 @@ public class DrinkOrderApp extends Application {
 
     public static void main(String[] args) {
         launch(args);
+    }
+
+    private void registerEvents() {
+        btnCalc.setOnAction(this::handleCalc);
+    }
+
+    private void handleCalc(ActionEvent e) {
+        // Bo sung noi dung o TODO 11
     }
 }
