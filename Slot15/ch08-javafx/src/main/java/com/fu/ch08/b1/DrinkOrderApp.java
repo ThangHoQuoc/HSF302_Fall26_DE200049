@@ -11,8 +11,13 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.LinkedHashMap;
 import java.util.Map;
+
+import static com.sun.webkit.perf.WCGraphicsPerfLogger.reset;
+import static java.rmi.server.LogStream.log;
 
 public class DrinkOrderApp extends Application {
 
@@ -103,9 +108,23 @@ public class DrinkOrderApp extends Application {
 
     private void registerEvents() {
         btnCalc.setOnAction(this::handleCalc);
+
+        btnClear.setOnAction(e -> {
+            reset();
+            log("Bấm Làm lại");
+        });
     }
 
     private void handleCalc(ActionEvent e) {
         // Bo sung noi dung o TODO 11
+    }
+
+    private void reset() {
+        // Bo sung noi dung o TODO 12
+    }
+
+    private void log(String msg) {
+        taLog.appendText("[%s] %s%n".formatted(
+                LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")), msg));
     }
 }
