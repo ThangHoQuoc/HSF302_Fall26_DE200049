@@ -12,6 +12,8 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.function.BooleanSupplier;
 
 public class RegisterApp extends Application {
@@ -45,6 +47,17 @@ public class RegisterApp extends Application {
     private Scene scene;
     private Parent registerView;        // tạo 1 lần, dùng lại khi quay về từ màn hình đăng nhập
 
+    private static Label err() {
+        Label l = new Label();
+        l.setStyle("-fx-text-fill: #d93025; -fx-font-size: 11;");
+        l.setWrapText(true);
+        return l;
+    }
+
+    public static void main(String[] args) {
+        launch(args);
+    }
+
     @Override
     public void start(Stage stage) {
         setupControls();
@@ -55,7 +68,6 @@ public class RegisterApp extends Application {
         stage.setTitle("B3 - Đăng ký & Đăng nhập");
         stage.show();
     }
-
 
     // TODO 3: Giao diện — GridPane 2 cột, mỗi ô nhập kèm label lỗi bên dưới
     private Parent buildRegisterView() {
@@ -97,7 +109,6 @@ public class RegisterApp extends Application {
         return sp;
     }
 
-
     // TODO 4: Đăng ký sự kiện
     private void registerEvents() {
         // 4a. Ô gõ chữ: validate khi RỜI KHỎI ô (mất focus) — không làm phiền khi đang gõ
@@ -128,8 +139,6 @@ public class RegisterApp extends Application {
         });
     }
 
-
-
     private Parent buildLoginView(String s) {
         return null;
     }
@@ -140,10 +149,6 @@ public class RegisterApp extends Application {
         GridPane.setValignment(lbl, VPos.TOP);  // nhãn canh theo dòng đầu (ô nhập), không canh giữa cả ô
         grid.add(lbl, 0, row);
     }
-
-
-
-
 
     // TODO 2: Cấu hình control
     private void setupControls() {
@@ -172,15 +177,53 @@ public class RegisterApp extends Application {
         btnRegister.setDefaultButton(true);
     }
 
-    private static Label err() {
-        Label l = new Label();
-        l.setStyle("-fx-text-fill: #d93025; -fx-font-size: 11;");
-        l.setWrapText(true);
-        return l;
+    // TODO 5: Validator — kiểm tra 1 field, ghi/xóa lỗi, trả về true nếu hợp lệ
+    private boolean check(Label err, boolean ok, String msg) {
+        err.setText(ok ? "" : msg);
+        return ok;
     }
 
-    public static void main(String[] args) {
-        launch(args);
+    private boolean vFullName() {
+        // \p{L}: chữ cái mọi ngôn ngữ; \p{M}: dấu kết hợp (bộ gõ "Unicode tổ hợp")
+        return check(errFullName, tfFullName.getText().trim().matches("[\\p{L}\\p{M} ]{3,50}"),
+                "Họ tên 3–50 ký tự, chỉ gồm chữ cái và khoảng trắng");
+    }
+
+    private boolean vEmail() {
+        return check(errEmail, tfEmail.getText().trim().matches("^[\\w.+-]+@[\\w-]+(\\.[\\w-]+)+$"),
+                "Email không hợp lệ (VD: abc@example.com)");
+    }
+
+    private boolean vUsername() {
+        String u = tfUsername.getText().trim().toLowerCase();
+        if (!u.matches("[a-z0-9_]{3,20}"))
+            return check(errUsername, false, "Username 3–20 ký tự: chữ thường, số, dấu _");
+        return check(errUsername, !UserStore.exists(u), "Username đã tồn tại");
+    }
+
+    private boolean vPassword() {
+        return check(errPassword, pfPassword.getText().matches(STRONG_PASSWORD),
+                "Mật khẩu ≥ 8 ký tự, gồm chữ hoa, chữ thường, số và ký tự đặc biệt");
+    }
+
+    private boolean vConfirm() {
+        String c = pfConfirm.getText();
+        return check(errConfirm, !c.isEmpty() && c.equals(pfPassword.getText()), "Mật khẩu xác nhận không khớp");
+    }
+
+    private boolean vGender() {
+        return check(errGender, tgGender.getSelectedToggle() != null, "Vui lòng chọn giới tính");
+    }
+
+    private boolean vDob() {
+        LocalDate d = dpDob.getValue();
+        if (d == null) return check(errDob, false, "Vui lòng chọn ngày sinh");
+        if (d.isAfter(LocalDate.now())) return check(errDob, false, "Ngày sinh không được ở tương lai");
+        return check(errDob, Period.between(d, LocalDate.now()).getYears() >= 16, "Phải đủ 16 tuổi trở lên");
+    }
+
+    private boolean vMajor() {
+        return check(errMajor, cbMajor.getValue() != null, "Vui lòng chọn ngành");
     }
 
 }
